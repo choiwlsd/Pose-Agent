@@ -1,6 +1,6 @@
 # 🎻 협주가능 악기 레슨 Agent AI 플랫폼 기술 개발
 
-멀티 에이전트 기반으로 동작하는 **실시간 음악 학습 AI 시스템**을 개발하는 프로젝트
+멀티 에이전트 기반으로 동작하는 **실시간 음악 학습 AI 시스템**을 개발하는 프로젝트.
 
 사용자의 연주 데이터를 분석하여 **음정, 박자, 자세**를 종합적으로 피드백하고,
 최종적으로 **협주(co-performance)**까지 지원하는 것을 목표로 삼고 진행.
@@ -13,9 +13,7 @@ It analyzes a user's performance data to provide integrated feedback on **pitch,
 
 ## 🚀 Project Outline
 
-본 프로젝트는 단일 모델이 아닌 **Multi-Agent Architecture**를 기반
-
-각 에이전트는 특정 역할을 수행하며, 협력하여 더 정교한 피드백을 생성.
+본 프로젝트는 단일 모델이 아닌 **Multi-Agent Architecture**를 기반: 각 에이전트는 특정 역할을 수행하며, 협력하여 더 정교한 피드백을 생성.
 
 ### 🎯 Goals
 
@@ -23,8 +21,6 @@ It analyzes a user's performance data to provide integrated feedback on **pitch,
 - 개별 요소별 피드백 제공 (Pitch, Rhythm, Pose)
 - 통합 피드백 생성 및 학습 가이드 제공
 - AI 기반 협주(Ensemble) 지원
-
----
 
 ## 🧠 System Architecture
 
@@ -45,8 +41,6 @@ Agent    Agent     Agent
   Final Feedback & Ensemble
 ```
 
----
-
 ## 🤖 에이전트 구성
 
 ### Pitch Agent
@@ -66,12 +60,12 @@ Agent    Agent     Agent
 - 올바른 자세 가이드 제공
 - 실시간 피드백 생성
 
-### 🧩 Supervisor Agent
+### Supervisor Agent
 
 - 각 에이전트의 결과를 종합
 - 사용자에게 전달할 최종 피드백 생성
 
-### 🎼 Orchestration Agent
+### Orchestration Agent
 
 - AI 기반 협주 기능
 - 사용자 연주에 맞춰 반주/합주 생성
@@ -86,8 +80,6 @@ Agent    Agent     Agent
 - **TCN**
 - **CNN**
 
----
-
 ## 🔍 현재 진행 상황
 
 - [x] Mediapipe 기반 Pose 추출 테스트
@@ -98,9 +90,7 @@ Agent    Agent     Agent
 - [ ] Multi-Agent 통신 구조 설계
 - [ ] Supervisor Agent 통합
 
----
-
-## WHAT I DID
+## 🏃‍♂️ WHAT I DID
 
 - Pose Agent 설계 및 개발
 - Mediapipe 기반 자세 분석 시스템 구현
