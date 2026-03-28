@@ -41,24 +41,32 @@ Agent    Agent     Agent
   Final Feedback & Ensemble
 ```
 
-## 🤖 에이전트 구성
-
-### Pitch Agent
-
-- 음정 정확도 분석
-- 실시간 음 높이 비교 및 피드백 제공
-
-### Rhythm Agent
-
-- 박자 및 템포 분석
-- 리듬 안정성 평가
-
-### ⭐ Pose Agent
+## 🤖 Pose Agent
 
 - 연주 자세 분석 (영상 기반)
 - Mediapipe 등을 활용한 관절/포즈 추출
 - 올바른 자세 가이드 제공
 - 실시간 피드백 생성
+
+### Architecture of Pose Agent
+
+```
+PoseAgent
+├── PoseExtractor (MediaPipe)
+├── FeatureExtractor
+├── PostureModel (TCN)
+└── FeedbackGenerator (Rule-based)
+```
+
+### Pose-Agent Structure
+
+```
+CD_PoseAgent/
+├── main.py                      # 전체 흐름 제어
+├── pose_extractor.py            # 웹캠 + mediapipe + keypoints 추출
+├── feature_extractor.py         # feature 계산
+└── pose_landmarker_lite.task
+```
 
 ### Supervisor Agent
 
