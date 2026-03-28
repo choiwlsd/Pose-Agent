@@ -53,7 +53,7 @@ Agent    Agent     Agent
 - 박자 및 템포 분석
 - 리듬 안정성 평가
 
-### ⭐ Pose Agent ⭐ (MY CONTRIBUTION)
+### ⭐ Pose Agent
 
 - 연주 자세 분석 (영상 기반)
 - Mediapipe 등을 활용한 관절/포즈 추출
@@ -99,5 +99,3 @@ Agent    Agent     Agent
 - TCN과 Rule-based 로직으로 자세 피드백 생성
 - 전체 멀티 에이전트 아키텍처 설계 참여
 - 실시간 피드백 로직 연구 및 개발
-
----
