@@ -1,6 +1,5 @@
 import cv2
 import mediapipe as mp
-from collections import deque
 
 BaseOptions = mp.tasks.BaseOptions
 PoseLandmarker = mp.tasks.vision.PoseLandmarker
