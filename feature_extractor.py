@@ -81,7 +81,7 @@ class FeatureExtractor:
         return result
 
     def get_elbow_angle(self, landmarks):
-        # 팔꿈치 각도 계산
+        # 팔 각도 계산
         # 왼팔: 왼어깨(11)-왼팔꿈치(13)-왼손목(15)
         # 오른팔: 오른어깨(12)-오른팔꿈치(14)-오른손목(16)
         # 반환: {'left': float, 'right': float}
@@ -142,15 +142,15 @@ class FeatureExtractor:
         wa  = features['wrist_angle'] or {}
 
         vector = [
-            wts.get('left', 0.0),   # 0
-            wts.get('right', 0.0),  # 1
-            sw if sw else 0.0,      # 2
-            wv.get('left', 0.0),    # 3
-            wv.get('right', 0.0),   # 4
-            ea.get('left', 0.0),    # 5
-            ea.get('right', 0.0),   # 6
-            wa.get('left', 0.0),    # 7
-            wa.get('right', 0.0),   # 8
+            wts.get('left', 0.0),   # 0 왼쪽 손목 - 왼쪽 어깨 거리
+            wts.get('right', 0.0),  # 1 오른쪽 손목 - 오른쪽 어깨 거리
+            sw if sw else 0.0,      # 2 어깨 너비
+            wv.get('left', 0.0),    # 3 왼쪽 손목 속도
+            wv.get('right', 0.0),   # 4 오른쪽 손목 속도
+            ea.get('left', 0.0),    # 5 왼쪽 팔 각도
+            ea.get('right', 0.0),   # 6 오른쪽 팔 각도
+            wa.get('left', 0.0),    # 7 왼쪽 손목 각도
+            wa.get('right', 0.0),   # 8 오른쪽 손목 각도
         ]
 
         return np.array(vector, dtype=np.float32)    
