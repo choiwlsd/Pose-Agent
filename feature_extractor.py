@@ -4,8 +4,10 @@ import math
 
 
 class FeatureExtractor:
-    def __init__(self):
+    def __init__(self, sequence_length=30):
         self.prev_landmarks = deque(maxlen=2)  # 현재 + 이전 프레임만 유지
+        self.sequence_buffer = deque(maxlen=sequence_length)  # 30개 feature 벡터 유지
+
 
     def _distance(self, a, b):
         # 두 landmark 사이의 2D 유클리드 거리 계산
@@ -31,8 +33,7 @@ class FeatureExtractor:
         angle_deg = math.degrees(angle_rad)
 
         return angle_deg
-
-   
+  
     def get_wrist_to_shoulder(self, landmarks):
         # 손목-어깨 거리 계산
         # 왼손목(15)-왼어깨(11), 오른손목(16)-오른어깨(12)
@@ -48,7 +49,6 @@ class FeatureExtractor:
 
         return result
 
-
     def get_shoulder_width(self, landmarks):
         # 양쪽 어깨 사이 거리 계산
         # 왼어깨(11)-오른어깨(12)
@@ -58,7 +58,6 @@ class FeatureExtractor:
             return self._distance(landmarks[11], landmarks[12])
         
         return None
-
 
     def get_wrist_velocity(self, landmarks):
         # 손목의 프레임 간 이동 거리 계산 (속도 유사)
@@ -80,7 +79,6 @@ class FeatureExtractor:
             result['right'] = self._distance(prev[16], curr[16])
 
         return result
-
 
     def get_elbow_angle(self, landmarks):
         # 팔꿈치 각도 계산
@@ -128,3 +126,43 @@ class FeatureExtractor:
             'elbow_angle':       self.get_elbow_angle(landmarks),
             'wrist_angle':       self.get_wrist_angle(landmarks)
         }
+    
+    def to_vector(self, features):
+        # features dictionary를 벡터 형태로 변환 (모델 입력용)
+        # (#features,) 형태의 1D numpy array 반환
+        # keypoint가 존재하지 않으면 0.0으로 채움
+
+        if features is None:
+            return np.zeros(10)  # feature 개수에 맞게 0 벡터 반환
+        
+        wts = features['wrist_to_shoulder'] or {}
+        sw  = features['shoulder_width']
+        wv  = features['wrist_velocity'] or {}
+        ea  = features['elbow_angle'] or {}
+        wa  = features['wrist_angle'] or {}
+
+        vector = [
+            wts.get('left', 0.0),   # 0
+            wts.get('right', 0.0),  # 1
+            sw if sw else 0.0,      # 2
+            wv.get('left', 0.0),    # 3
+            wv.get('right', 0.0),   # 4
+            ea.get('left', 0.0),    # 5
+            ea.get('right', 0.0),   # 6
+            wa.get('left', 0.0),    # 7
+            wa.get('right', 0.0),   # 8
+        ]
+
+        return np.array(vector, dtype=np.float32)    
+    
+    def update_buffer(self, features):
+        # sequence buffer에 feature 벡터 추가
+        # 버퍼가 sequence_length개 채워지면 (sequence_length, feature_dim) 형태의 numpy array 반환, 그렇지 않으면 None 반환
+        vector = self.to_vector(features)
+        self.sequence_buffer.append(vector)
+
+        if len(self.sequence_buffer) < self.sequence_buffer.maxlen:
+            return None  # 버퍼가 아직 채워지지 않음
+        
+        # (sequence_length, feature_dim) = (30, 9) 형태의 배열 반환 
+        return np.array(self.sequence_buffer, dtype=np.float32)  
