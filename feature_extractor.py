@@ -1,5 +1,7 @@
 import numpy as np
 from collections import deque
+import math
+
 
 class FeatureExtractor:
     def __init__(self):
@@ -8,6 +10,27 @@ class FeatureExtractor:
     def _distance(self, a, b):
         # 두 landmark 사이의 2D 유클리드 거리 계산
         return ((a.x - b.x)**2 + (a.y - b.y)**2) ** 0.5
+    
+    def _angle(self, a, b, c):
+        # 세 landmark가 이루는 각도 계산 (b가 꼭짓점, b에서 a와 c로 향하는 벡터의 각도)
+
+        ab = np.array([a.x - b.x, a.y - b.y])
+        cb = np.array([c.x - b.x, c.y - b.y])
+
+        dot_product = np.dot(ab, cb)
+        norm_ab = np.linalg.norm(ab)
+        norm_cb = np.linalg.norm(cb)
+
+        if norm_ab == 0 or norm_cb == 0:
+            return None  # 벡터 길이가 0이면 각도 계산 불가
+
+        cos_angle = dot_product / (norm_ab * norm_cb)  
+        cos_angle = np.clip(cos_angle, -1.0, 1.0)  # 수치 안정성 위해 클리핑
+
+        angle_rad = math.acos(cos_angle)
+        angle_deg = math.degrees(angle_rad)
+
+        return angle_deg
 
    
     def get_wrist_to_shoulder(self, landmarks):
@@ -36,6 +59,7 @@ class FeatureExtractor:
         
         return None
 
+
     def get_wrist_velocity(self, landmarks):
         # 손목의 프레임 간 이동 거리 계산 (속도 유사)
         # 왼손목(15), 오른손목(16)
@@ -58,6 +82,39 @@ class FeatureExtractor:
         return result
 
 
+    def get_elbow_angle(self, landmarks):
+        # 팔꿈치 각도 계산
+        # 왼팔: 왼어깨(11)-왼팔꿈치(13)-왼손목(15)
+        # 오른팔: 오른어깨(12)-오른팔꿈치(14)-오른손목(16)
+        # 반환: {'left': float, 'right': float}
+
+        result = {}
+
+        if 11 in landmarks and 13 in landmarks and 15 in landmarks:
+            result['left'] = self._angle(landmarks[11], landmarks[13], landmarks[15])
+
+        if 12 in landmarks and 14 in landmarks and 16 in landmarks:
+            result['right'] = self._angle(landmarks[12], landmarks[14], landmarks[16])
+
+        return result
+    
+    def get_wrist_angle(self, landmarks):
+        # 손목 각도 (팔꿈치-손목-엄지)
+        # 왼손: 왼팔꿈치(13)-왼손목(15)-왼엄지(17)
+        # 오른손: 오른팔꿈치(14)-오른손목(16)-오른엄지(18)
+        # 반환: {'left': float, 'right': float}
+
+        result = {}
+
+        if 13 in landmarks and 15 in landmarks and 17 in landmarks:
+            result['left'] = self._angle(landmarks[13], landmarks[15], landmarks[17])
+
+        if 14 in landmarks and 16 in landmarks and 18 in landmarks:
+            result['right'] = self._angle(landmarks[14], landmarks[16], landmarks[18])
+
+        return result
+
+
     def compute(self, landmarks):
         # 모든 거리 feature를 한번에 계산해서 dictionary로 반환
 
@@ -67,5 +124,7 @@ class FeatureExtractor:
         return {
             'wrist_to_shoulder': self.get_wrist_to_shoulder(landmarks),
             'shoulder_width':    self.get_shoulder_width(landmarks),
-            'wrist_velocity':    self.get_wrist_velocity(landmarks)
+            'wrist_velocity':    self.get_wrist_velocity(landmarks),
+            'elbow_angle':       self.get_elbow_angle(landmarks),
+            'wrist_angle':       self.get_wrist_angle(landmarks)
         }
