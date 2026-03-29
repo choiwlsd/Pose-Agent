@@ -38,6 +38,9 @@ class PoseExtractor:
         
         # 웹캠 열기
         self.cap = cv2.VideoCapture(0)   
+
+        # fps = self.cap.get(cv2.CAP_PROP_FPS)
+        # print(f"웹캠 FPS: {fps}")
         
         # 버퍼를 1로 설정: 최신 프레임만 유지
         self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)   

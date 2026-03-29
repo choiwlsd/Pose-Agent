@@ -19,15 +19,17 @@ def on_landmarks(landmarks):
     if features is None:
         return
     
-    wts = features['wrist_to_shoulder']
-    sw  = features['shoulder_width']
+    # wts = features['wrist_to_shoulder']
+    # sw  = features['shoulder_width']
 
-    if 'left' in wts:
-        print(f"왼손목-왼어깨 거리:  {wts['left']:.3f}")
-    if 'right' in wts:
-        print(f"오른손목-오른어깨 거리: {wts['right']:.3f}")
-    if sw:
-        print(f"어깨 너비: {sw:.3f}")  
+    # if 'left' in wts:
+    #     print(f"왼손목-왼어깨 거리:  {wts['left']:.3f}")
+    # if 'right' in wts:
+    #     print(f"오른손목-오른어깨 거리: {wts['right']:.3f}")
+    # if sw:
+    #     print(f"어깨 너비: {sw:.3f}")  
+
+    print(features)
 
 
     # presence 통과한 keypoints만 출력 
