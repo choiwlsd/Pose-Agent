@@ -1,6 +1,6 @@
-from pose_extractor import PoseExtractor
-from feature_extractor import FeatureExtractor
-from visualizer import print_features
+from model.pose_extractor import PoseExtractor
+from model.feature_extractor import FeatureExtractor
+from func.visualizer import print_features
 
 
 # 전역 변수로 pose_extractor와 feature_extractor 인스턴스 생성

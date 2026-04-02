@@ -2,13 +2,12 @@ import numpy as np
 from collections import deque
 import math
 
-
 class FeatureExtractor:
     def __init__(self, sequence_length=30, stride=15):
         self.prev_landmarks = deque(maxlen=2)  # 현재 + 이전 프레임만 유지
         self.sequence_buffer = deque(maxlen=sequence_length)  # 30개 feature 벡터 유지
         self.stride = stride
-        self.fram_counter = 0  # 프레임 카운터: stride마다 시퀀스 버퍼에 추가
+        self.frame_counter = 0  # 프레임 카운터: stride마다 시퀀스 버퍼에 추가
 
     def _distance(self, a, b):
         # 두 landmark 사이의 2D 유클리드 거리 계산
