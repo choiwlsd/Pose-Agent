@@ -13,16 +13,16 @@ class DatasetCollector:
         # 영상 1개 처리 → (30, 9) sequence 추출
         # label: int (0 or 1)
         featureExtractor = FeatureExtractor()  # 영상마다 버퍼 초기화
-        poseExtractor = PoseExtractor(source=video_path, display=False)
+        poseExtractor = PoseExtractor(source=video_path)
 
         def on_landmarks(landmarks):
             features = featureExtractor.compute(landmarks)
-            sequence = featureExtractor.sequence_buffer(features)
+            sequence = featureExtractor.update_buffer(features)
             if sequence is not None:
                 self.sequences.append(sequence)
                 self.labels.append(label)
 
-        poseExtractor.run(callback=on_landmarks)
+        poseExtractor.run(callback=on_landmarks, display=False)  # display=False: 영상 창 띄우지 않음
         print(f"  완료: {os.path.basename(video_path)} → {len(self.sequences)}개 sequence 누적")
 
     def process_folder(self, folder_path, label):
@@ -53,7 +53,7 @@ class DatasetCollector:
         print(f"\n=== 데이터 수집 현황 ===")
         print(f"전체 sequences: {len(self.sequences)}개")
         print(f"good (0): {(labels == 0).sum()}개")
-        print(f"bad  (1): {(labels == 1).sum()}개")
+        # print(f"bad  (1): {(labels == 1).sum()}개")
 
     def save(self, save_path='dataset.npz'):
         # 수집한 데이터 저장
@@ -73,5 +73,5 @@ class DatasetCollector:
 if __name__ == "__main__":
     collector = DatasetCollector()
     collector.process_folder('data/good', label='good')
-    collector.process_folder('data/bad',  label='bad')
+    # collector.process_folder('data/bad',  label='bad')
     collector.save('dataset.npz')
