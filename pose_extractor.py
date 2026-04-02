@@ -88,7 +88,6 @@ class PoseExtractor:
                 break
 
             # 프레임을 RGB MediaPipe Image로 변환
-            h, w = frame.shape[:2]
             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
 

@@ -17,7 +17,7 @@ class DatasetCollector:
 
         def on_landmarks(landmarks):
             features = featureExtractor.compute(landmarks)
-            sequence = featureExtractor.update_sequence(features)
+            sequence = featureExtractor.sequence_buffer(features)
             if sequence is not None:
                 self.sequences.append(sequence)
                 self.labels.append(label)
