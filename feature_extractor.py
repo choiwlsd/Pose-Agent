@@ -4,10 +4,11 @@ import math
 
 
 class FeatureExtractor:
-    def __init__(self, sequence_length=30):
+    def __init__(self, sequence_length=30, stride=15):
         self.prev_landmarks = deque(maxlen=2)  # 현재 + 이전 프레임만 유지
         self.sequence_buffer = deque(maxlen=sequence_length)  # 30개 feature 벡터 유지
-
+        self.stride = stride
+        self.fram_counter = 0  # 프레임 카운터: stride마다 시퀀스 버퍼에 추가
 
     def _distance(self, a, b):
         # 두 landmark 사이의 2D 유클리드 거리 계산
@@ -156,10 +157,13 @@ class FeatureExtractor:
         return np.array(vector, dtype=np.float32)    
     
     def update_buffer(self, features):
-        # sequence buffer에 feature 벡터 추가
-        # 버퍼가 sequence_length개 채워지면 (sequence_length, feature_dim) 형태의 numpy array 반환, 그렇지 않으면 None 반환
-        vector = self.to_vector(features)
-        self.sequence_buffer.append(vector)
+        self.fram_counter += 1
+
+        if self.fram_counter % self.stride == 0:
+            # sequence buffer에 feature 벡터 추가
+            # 버퍼가 sequence_length개 채워지면 (sequence_length, feature_dim) 형태의 numpy array 반환, 그렇지 않으면 None 반환
+            vector = self.to_vector(features)
+            self.sequence_buffer.append(vector)
 
         if len(self.sequence_buffer) < self.sequence_buffer.maxlen:
             return None  # 버퍼가 아직 채워지지 않음
