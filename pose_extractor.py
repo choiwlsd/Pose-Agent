@@ -21,7 +21,7 @@ CONNECTIONS = [
 ]
 
 class PoseExtractor:
-    def __init__(self, model_path='pose_landmarker_lite.task', presence_threshold=0.5):
+    def __init__(self, source=0, model_path='pose_landmarker_lite.task', presence_threshold=0.5):
         self.presence_threshold = presence_threshold
 
         # 결과 저장용
@@ -35,14 +35,12 @@ class PoseExtractor:
 
         self.landmarker = PoseLandmarker.create_from_options(options)
         
-        # 웹캠 열기
-        self.cap = cv2.VideoCapture(0)   
+        # 0(웹캠) 또는 영상 파일 경로로 초기화
+        self.cap = cv2.VideoCapture(source)   
 
-        # fps = self.cap.get(cv2.CAP_PROP_FPS)
-        # print(f"웹캠 FPS: {fps}")
-        
-        # 버퍼를 1로 설정: 최신 프레임만 유지
-        self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)   
+        # 웹캠일 때만 버퍼 설정: 영상 파일은 프레임 단위로 읽기 때문에 버퍼 필요 없음
+        if source == 0:
+            self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)  # 버퍼를 1로 설정: 최신 프레임만 유지
         
         # 프레임 순서 카운터
         self.timestamp = 0   
@@ -82,7 +80,8 @@ class PoseExtractor:
         return frame
 
     # 메인 루프: 프레임 읽고, landmarks 추출, callback으로 landmarks main.py에 전달 
-    def run(self, callback=None):
+    # 
+    def run(self, callback=None, display=True):
         while self.cap.isOpened():
             ret, frame = self.cap.read() # 프레임 1장 읽기: ret은 성공 여부, frame은 이미지 데이터
             if not ret:
@@ -103,12 +102,13 @@ class PoseExtractor:
             if callback:
                 callback(landmarks)
 
-            frame = self.draw(frame, landmarks)
-            cv2.imshow("MediaPipe Pose", frame)
+            if display:
+                frame = self.draw(frame, landmarks)
+                cv2.imshow("MediaPipe Pose", frame)
 
-            # 1ms 대기 후 'q' 키 누르면 종료
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+                # 1ms 대기 후 'q' 키 누르면 종료
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
 
         self.release()
 
