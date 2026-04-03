@@ -80,11 +80,12 @@ CD_PoseAgent/
 
 ---
 
-## 🛠️ Skills for Pose Agent
+## 🛠️ Skills/Models for Pose Agent
 
 - **Python**
 - **Mediapipe** (Pose Estimation)
 - **OpenCV**
+- **Pytorch**
 - **TCN**
 - **CNN**
 
