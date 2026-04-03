@@ -98,6 +98,7 @@ CD_PoseAgent/
 - [x] Mediapipe 기반 Pose 추출 테스트
 - [x] Pose Agent 프로토타입 구현
 - [x] Feature 확정 및 계산 로직 구현
+- [x] 좋은 자세와 나쁜 자세에 대한 데이터셋 만들기
 - [ ] TCN 설계 및 학습 계획 구체화
 - [ ] Rule-based를 위한 기준 확정
 - [ ] Multi-Agent 통신 구조 설계
