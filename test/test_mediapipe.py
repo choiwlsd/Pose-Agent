@@ -34,8 +34,6 @@ options = PoseLandmarkerOptions(
     result_callback=print_result
 )
 
-
-
 # 웹캠 열기 + 영상 읽기
 cap = cv2.VideoCapture(0)
 # 타임스탬프 초기화 (실제 시간 대신 프레임 단위로 증가시키는 방식)
