@@ -48,6 +48,8 @@ Agent    Agent     Agent
 - 올바른 자세 가이드 제공
 - 실시간 피드백 생성
 
+<small>Pose Agent 개발 및 설계 일지 👉 ([journey HERE](https://oiblog.tistory.com/category/%EC%9E%90%EA%B8%B0%EA%B0%9C%EB%B0%9C/%ED%83%90%EA%B5%AC)) </small>
+
 ### Architecture of Pose Agent
 
 ```
@@ -99,6 +101,7 @@ CD_PoseAgent/
 - [x] Pose Agent 프로토타입 구현
 - [x] Feature 확정 및 계산 로직 구현
 - [x] 좋은 자세와 나쁜 자세에 대한 데이터셋 만들기
+- [x] 생성한 데이터셋 분석
 - [ ] TCN 설계 및 학습 계획 구체화
 - [ ] Rule-based를 위한 기준 확정
 - [ ] Multi-Agent 통신 구조 설계
