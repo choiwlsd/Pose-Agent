@@ -1,0 +1,2 @@
+# 특정 확장자 파일을 통계에서 제외 (예: .ipynb)
+*.ipynb linguist-detectable=false
