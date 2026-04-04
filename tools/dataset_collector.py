@@ -1,5 +1,7 @@
 import os
+import sys
 import numpy as np
+sys.path.append(os.path.join(os.path.dirname(__file__), '..')) # 상위 폴더 경로 추가
 from model.pose_extractor import PoseExtractor
 from model.feature_extractor import FeatureExtractor
 
@@ -14,8 +16,9 @@ class DatasetCollector:
         self.sequences = []  # (N, 30, 6) feature sequences
         self.labels = []     # (N,) (0: good, 1: bad)
 
-    def process_video(self, video_path, label):
-        # 영상 1개 처리 → (30, 6) sequence 추출 후 바로 저장
+    def process_video(self, video_path, label, save_path):
+        # 영상 1개 처리 → (N, 30, 6) sequence 추출 후 바로 저장
+        sequences = []  # 영상마다 시퀀스 초기화
         featureExtractor = FeatureExtractor() # 영상마다 버퍼 초기화
         poseExtractor = PoseExtractor(source=video_path)
 
@@ -23,11 +26,19 @@ class DatasetCollector:
             features = featureExtractor.compute(landmarks)
             sequence = featureExtractor.update_buffer(features)
             if sequence is not None:
-                self.sequences.append(sequence)
-                self.labels.append(label)
+                sequences.append(sequence)
 
         poseExtractor.run(callback=on_landmarks, display=False) # display=False: 영상 출력 없이 처리
-        print(f"  완료: {os.path.basename(video_path)} → {len(self.sequences)}개 sequence 누적")
+
+        if not sequences:
+            print(f"  경고: sequence가 없어요 → {os.path.basename(video_path)}")
+            return
+        
+        sequences_np = np.array(sequences, dtype=np.float32)  # (N, 30, 6)
+        labels_np    = np.full(len(sequences), label, dtype=np.int64) #
+
+        np.savez(save_path, sequences=sequences_np, labels=labels_np)
+        print(f"  완료: {os.path.basename(video_path)} → {sequences_np.shape} → {save_path}")
 
 
     def process_folder(self, folder_path, label):
@@ -44,52 +55,17 @@ class DatasetCollector:
             print(f"경고: {folder_path}에 영상 파일이 없어요!")
             return
 
+        save_dir = os.path.join('data', 'datasets')
+        os.makedirs(save_dir, exist_ok=True)
+
         print(f"\n[{label_name}] {folder_path} ({len(video_files)}개 영상)")
-        for filename in video_files:
+        for i, filename in enumerate(video_files, start=1):
             video_path = os.path.join(folder_path, filename)
+            save_path  = os.path.join(save_dir, f"dataset_{label_name}_{i}.npz")
             print(f"  처리 중: {filename}")
-            self.process_video(video_path, label)
-
-        # 개별 저장
-        labels_np    = np.array(self.labels,    dtype=np.int64)
-        sequences_np = np.array(self.sequences, dtype=np.float32)
-        mask         = labels_np == label
-
-        os.makedirs('data/datasets', exist_ok=True)
-        save_path = f'data/datasets/dataset_{label_name}.npz'
-        np.savez(save_path, sequences=sequences_np[mask], labels=labels_np[mask])
-        print(f"  개별 저장 완료: {save_path} → {sequences_np[mask].shape}")
-
-
-    def get_stats(self):
-        if not self.sequences:
-            print("수집된 데이터가 없어요!")
-            return
-        labels = np.array(self.labels)
-        print(f"\n=== 데이터 수집 현황 ===")
-        print(f"전체 sequences: {len(self.sequences)}개")
-        print(f"good (0): {(labels == 0).sum()}개")
-        print(f"bad  (1): {(labels == 1).sum()}개")
-
-
-    def save(self, save_path='data/datasets/dataset.npz'):
-        if not self.sequences:
-            print("저장할 데이터가 없어요!")
-            return
-
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)
-
-        sequences = np.array(self.sequences, dtype=np.float32)  # (N, 30, 6)
-        labels    = np.array(self.labels,    dtype=np.int64)     # (N,)
-
-        np.savez(save_path, sequences=sequences, labels=labels)
-
-        self.get_stats()
-        print(f"\n저장 완료: {save_path}")
-        print(f"sequences shape: {sequences.shape}")
+            self.process_video(video_path, label, save_path)
 
 if __name__ == "__main__":
     collector = DatasetCollector()
     collector.process_folder('data/raw/good', label='good')
     collector.process_folder('data/raw/bad',  label='bad')
-    collector.save()
