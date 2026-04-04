@@ -48,7 +48,7 @@ Agent    Agent     Agent
 - 올바른 자세 가이드 제공
 - 실시간 피드백 생성
 
-<small>Pose Agent 개발 및 설계 일지 👉 ([journey HERE](https://oiblog.tistory.com/category/%EC%9E%90%EA%B8%B0%EA%B0%9C%EB%B0%9C/%ED%83%90%EA%B5%AC)) </small>
+💗 Pose Agent 개발 및 설계 일지 👉 [HERE](https://oiblog.tistory.com/category/%EC%9E%90%EA%B8%B0%EA%B0%9C%EB%B0%9C/%ED%83%90%EA%B5%AC)
 
 ### Architecture of Pose Agent
 
