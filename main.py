@@ -4,7 +4,7 @@ from tools.visualizer import print_features
 
 
 # 전역 변수로 pose_extractor와 feature_extractor 인스턴스 생성
-poseExtractor = PoseExtractor()
+poseExtractor = PoseExtractor(source='data/raw/good/input_good_1.mp4') # 영상 파일 경로로 초기화
 featureExtractor = FeatureExtractor()
 
 
