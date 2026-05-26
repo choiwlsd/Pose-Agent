@@ -2,8 +2,8 @@ import os
 import sys
 import numpy as np
 sys.path.append(os.path.join(os.path.dirname(__file__), '..')) # 상위 폴더 경로 추가
-from model.pose_extractor import PoseExtractor
-from model.feature_extractor import FeatureExtractor
+from tools.pose_extractor import PoseExtractor
+from tools.feature_extractor import FeatureExtractor
 
 LABELS = {
     0: 'good',

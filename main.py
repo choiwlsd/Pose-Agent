@@ -1,5 +1,5 @@
-from model.pose_extractor import PoseExtractor
-from model.feature_extractor import FeatureExtractor
+from tools.pose_extractor import PoseExtractor
+from tools.feature_extractor import FeatureExtractor
 from tools.visualizer import print_features
 
 
