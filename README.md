@@ -58,12 +58,22 @@ PoseAgent
 ├── FeatureExtractor
 ├── PostureModel (TCN)
 └── FeedbackGenerator (Rule-based)
+
+Pose Agent
+    ↓
+현재 자세 상태 분석
+    ↓
+Supervisor Agent(Q-table 관리)
+    ↓
+reward/action score 반환
+    ↓
+Pose Agent가 상태 유지 및 피드백 반영
 ```
 
-### Pose-Agent Structure
+### Pose-Agent File Directory
 
 ```
-CD_PoseAgent/
+PoseAgent/
 ├── main.py                      # 전체 흐름 제어
 ├── pose_extractor.py            # 웹캠 + mediapipe + keypoints 추출
 ├── feature_extractor.py         # feature 계산
@@ -103,8 +113,11 @@ CD_PoseAgent/
 - [x] 좋은 자세와 나쁜 자세에 대한 데이터셋 만들기
 - [x] 생성한 데이터셋 분석
 - [ ] TCN 설계 및 학습 계획 구체화
-- [ ] Rule-based를 위한 기준 확정
-- [ ] Multi-Agent 통신 구조 설계
+- [x] Rule-based를 위한 기준 확정
+- [x] Multi-Agent 통신 구조 설계
+- [x] Pose를 판단하는 로직을 가진 함수 생성
+- [x] 현재 상태와 이전 상태 비교
+- [x] Reward 구조 추가: Supervisior의 Q-table 참조
 - [ ] Supervisor Agent 통합
 
 ## 🏃‍♂️ WHAT I DID
