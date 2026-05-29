@@ -305,7 +305,7 @@ class PoseFeedbackAnalyzer:
         if danger_count >= 2:
             return "위험"
 
-        if final_score < 30:
+        if final_score < 45:
             return "안정"
 
         if final_score < 60:

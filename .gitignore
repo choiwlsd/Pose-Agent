@@ -6,3 +6,4 @@ __pycache__/
 /data/raw/*
 train_tcn.py
 tcn_model.py
+pose_output.json

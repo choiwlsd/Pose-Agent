@@ -157,26 +157,40 @@ class MockPoseRewardTable:
 
         return self.q_table[state_key][action]
 
-    def evaluate_transition(self, previous_result, current_result, previous_state=None, action=None):
-        """Convenience method: state conversion, reward, action choice, and update."""
+    def evaluate_transition(
+            self, 
+            previous_result, 
+            current_result, 
+            previous_state=None, 
+            action=None
+        ):
+
+        '''RL transition logger'''
+        # state 생성
         if previous_state is None:
             previous_state = self.get_state(previous_result)
 
         current_state = self.get_state(current_result, previous_state)
 
+        # action 결정(state(t) 기준)
         if action is None:
             action = self.choose_action(previous_state)
 
+        # reward 계산
         reward_info = self.compute_reward(
             previous_result,
             current_result,
             previous_state,
             current_state,
         )
+
+        reward = reward_info["reward"]
+
+        # Q-table 업데이트
         updated_q = self.update(
             previous_state,
             action,
-            reward_info["reward"],
+            reward,
             current_state,
         )
 
@@ -184,7 +198,7 @@ class MockPoseRewardTable:
             "previous_state": previous_state.as_tuple(),
             "current_state": current_state.as_tuple(),
             "action": action,
-            "reward": reward_info["reward"],
+            "reward": reward,
             "reason": reward_info["reason"],
             "score_delta": reward_info["score_delta"],
             "updated_q": updated_q,

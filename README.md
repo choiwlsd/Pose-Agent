@@ -162,6 +162,16 @@ Q-learning (mock supervisor)
 
 3개가 섞여있는 reward shaping RL(강화학습; reinforcing learning) system 구조
 
+state(t)
+↓
+action(t)
+↓
+reward(t)
+↓
+state(t+1)
+↓
+update Q
+
 ## Supervisor Agent
 
 - 각 에이전트의 결과를 종합
