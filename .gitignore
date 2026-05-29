@@ -4,5 +4,5 @@ __pycache__/
 *.pyc
 .env
 /data/raw/*
-train.py
+train_tcn.py
 tcn_model.py

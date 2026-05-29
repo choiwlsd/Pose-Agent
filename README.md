@@ -48,7 +48,32 @@ Agent    Agent     Agent
 - 올바른 자세 가이드 제공
 - 실시간 피드백 생성
 
+- perception (pose 추출)
+- feature engineering
+- state inference
+- reward interface
+- Q-table lookup bridge
+
+not sequence modeling(TCN/LSTM)
+but,
+handcrafted biomechanical feature
+statistical deviation
+logistic regression
+rule-based risk interpretation
+
+시스템이 필요로 하는 것들:
+
+explainability 필요
+coaching feedback 필요
+reward 설계 필요
+supervisor agent 연동 필요
+
+-> 후자를 선택한 이유
+-> TCN보다 지금 구조가 강화학습 reward engineering에 훨씬 유리
+
 💗 Pose Agent 개발 및 설계 일지 👉 [HERE](https://oiblog.tistory.com/tag/Pose-Agent)
+
+> Explainable posture correction system with supervised feature grounding!
 
 ### Architecture of Pose Agent
 
@@ -68,7 +93,42 @@ Supervisor Agent(Q-table 관리)
 reward/action score 반환
     ↓
 Pose Agent가 상태 유지 및 피드백 반영
+
+
+MediaPipe
+↓
+Landmarks
+↓
+FeatureExtractor
+↓
+(30,6) sequence
+↓
+PostureFeedbackAnalyzer (ML + Rule Hybrid)
+    - LogisticRegression
+    - Z-score deviation
+    - biomechanical risk
+    - explainability
+↓
+PoseState {
+    case,
+    final_score,
+    details,
+    summary
+}
+↓
+Pose Agent
+    - state 결정
+    - reward 계산
+↓
+Supervisor Agent
+    - state 받음
+    - Q-table lookup
+    - reward score 반환
 ```
+
+### Q-table
+
+Q-table = 상태별 평가 점수 DB
 
 ### Pose-Agent File Directory
 
@@ -78,14 +138,40 @@ PoseAgent/
 ├── pose_extractor.py            # 웹캠 + mediapipe + keypoints 추출
 ├── feature_extractor.py         # feature 계산
 └── pose_landmarker_lite.task
+
+
+main.py
+   ↓
+PoseAgent
+   ↓
+(Posture logic)
+FeatureExtractor
+Analyzer
+State builder
+Supervisor interface
+   ↓
+JSON output layer
 ```
 
-### Supervisor Agent
+### RL System Structure
+
+Hybrid RL system
+supervised ML (LogisticRegression)
+rule-based biomechanical scoring
+Q-learning (mock supervisor)
+
+3개가 섞여있는 reward shaping RL(강화학습; reinforcing learning) system 구조
+
+## Supervisor Agent
 
 - 각 에이전트의 결과를 종합
 - 사용자에게 전달할 최종 피드백 생성
+- state 입력 받음
+- Q-table lookup
+- reward score 반환
+- ❌ state 판단하면 안 됨
 
-### Orchestration Agent
+## Orchestration Agent
 
 - AI 기반 협주 기능
 - 사용자 연주에 맞춰 반주/합주 생성
