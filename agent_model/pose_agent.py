@@ -22,9 +22,14 @@ class PoseAgent:
     ):
         self.webcam = webcam
         self.fps = self._get_capture_fps()
+
+        # 몇 초마다 피드백을 줄지 설정 (현재: 5초마다)
         self.feedback_interval_seconds = feedback_interval_seconds
+        # 다음 피드백 타임스탬프 초기화
         self.next_feedback_timestamp = feedback_interval_seconds
         self.frame_index = 0
+
+        # 컴포넌트 초기화
         self.pose_extractor = pose_extractor or PoseExtractor(webcam)
         self.feature_extractor = feature_extractor or FeatureExtractor(
             sequence_length=max(1, int(round(self.fps * feedback_interval_seconds))),
@@ -37,6 +42,7 @@ class PoseAgent:
         self.prev_result = None
         self.prev_state = None
 
+    # 메인 루프: 웹캠 프레임 읽기 > 자세 분석(step) > 피드백 출력
     def run(self, display=True):
         try:
             while self.webcam.isOpened():
@@ -55,6 +61,7 @@ class PoseAgent:
         finally:
             self.release()
 
+    # 한 프레임의 landmakrs 입력 > 자세 분석 + 피드백
     def step(self, landmarks, print_debug=True):
         if landmarks is None:
             return None
@@ -81,8 +88,10 @@ class PoseAgent:
                 "reward": None,
             }
 
+        # 자세 분석
         result = self.analyzer.analyze(sequence)
 
+        # 이전 상태가 존재하면 상태 전이 평가
         if self.prev_state is not None:
             transition = self.supervisor.evaluate_transition(
                 previous_result=self.prev_result,
@@ -92,6 +101,7 @@ class PoseAgent:
         else:
             transition = None
 
+        # 사용자에게 보여줄 요약 피드백
         feedback = result["summary"]
 
         # supervisor state 변환
@@ -118,11 +128,13 @@ class PoseAgent:
             reward_info = None
             action = None
 
+        # 다음 피드백 타임스탬프 업데이트
         self.prev_result = result
         self.prev_state = current_state
         while self.next_feedback_timestamp <= timestamp:
             self.next_feedback_timestamp += self.feedback_interval_seconds
 
+        # console 출력 + 결과 저장
         self.print_feedback(result, reward_info=reward_info, transition=transition)
         self.write_result(result, feedback, transition, timestamp)
 
@@ -135,6 +147,7 @@ class PoseAgent:
             "transition": transition,
         }
 
+    # 웹캠 FPS 가져오기 (기본값: 30 FPS)
     def _get_capture_fps(self):
         fps = self.webcam.get(cv2.CAP_PROP_FPS)
         if fps and fps > 0:
@@ -153,6 +166,7 @@ class PoseAgent:
             print_features(features)
         return features
 
+    # 현재 결과 활용 > 상태 및 Reward 계산
     def update_supervisor(self, result):
         if not self.supervisor:
             return None, None
@@ -169,6 +183,7 @@ class PoseAgent:
         )
         return state, reward_info
 
+    # 결과 출력
     def print_feedback(self, result, reward_info=None, transition=None):
         print("\n" + "=" * 60)
         print(f"[POSTURE CASE] {result['case']}")
@@ -198,6 +213,7 @@ class PoseAgent:
             print(f"- score_delta: {transition['score_delta']}")
             print(f"- updated_q: {transition['updated_q']}")
 
+    # 결과를 JSON 파일로 저장
     def write_result(self, result, feedback, transition=None, timestamp=None):
         if not self.output_path:
             return
