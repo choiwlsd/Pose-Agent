@@ -1,5 +1,4 @@
 import json
-import time
 
 import cv2
 
@@ -19,10 +18,18 @@ class PoseAgent:
         analyzer=None,
         output_path="pose_output.json",
         supervisor=None,
+        feedback_interval_seconds=5.0,
     ):
         self.webcam = webcam
+        self.fps = self._get_capture_fps()
+        self.feedback_interval_seconds = feedback_interval_seconds
+        self.next_feedback_timestamp = feedback_interval_seconds
+        self.frame_index = 0
         self.pose_extractor = pose_extractor or PoseExtractor(webcam)
-        self.feature_extractor = feature_extractor or FeatureExtractor()
+        self.feature_extractor = feature_extractor or FeatureExtractor(
+            sequence_length=max(1, int(round(self.fps * feedback_interval_seconds))),
+            stride=1,
+        )
         self.analyzer = analyzer or PoseFeedbackAnalyzer()
         self.output_path = output_path
         self.supervisor = supervisor or MockPoseRewardTable()
@@ -37,6 +44,7 @@ class PoseAgent:
                 if not ret:
                     break
 
+                self.frame_index += 1
                 landmarks, frame = self.pose_extractor.extract(frame)
                 self.step(landmarks)
 
@@ -55,6 +63,16 @@ class PoseAgent:
         sequence = self.feature_extractor.update_buffer(features)
 
         if sequence is None:
+            return {
+                "features": features,
+                "analysis": None,
+                "feedback": None,
+                "state": None,
+                "reward": None,
+            }
+
+        timestamp = self.current_video_timestamp()
+        if timestamp < self.next_feedback_timestamp:
             return {
                 "features": features,
                 "analysis": None,
@@ -102,9 +120,11 @@ class PoseAgent:
 
         self.prev_result = result
         self.prev_state = current_state
+        while self.next_feedback_timestamp <= timestamp:
+            self.next_feedback_timestamp += self.feedback_interval_seconds
 
-        self.print_feedback(result, transition)
-        self.write_result(result, feedback, transition)
+        self.print_feedback(result, reward_info=reward_info, transition=transition)
+        self.write_result(result, feedback, transition, timestamp)
 
         return {
             "features": features,
@@ -114,6 +134,18 @@ class PoseAgent:
             "action": action,
             "transition": transition,
         }
+
+    def _get_capture_fps(self):
+        fps = self.webcam.get(cv2.CAP_PROP_FPS)
+        if fps and fps > 0:
+            return fps
+        return 30.0
+
+    def current_video_timestamp(self):
+        timestamp = self.webcam.get(cv2.CAP_PROP_POS_MSEC) / 1000.0
+        if timestamp > 0:
+            return timestamp
+        return self.frame_index / self.fps
 
     def pose_to_features(self, landmarks, print_debug=True):
         features = self.feature_extractor.compute(landmarks)
@@ -166,12 +198,15 @@ class PoseAgent:
             print(f"- score_delta: {transition['score_delta']}")
             print(f"- updated_q: {transition['updated_q']}")
 
-    def write_result(self, result, feedback, transition=None):
+    def write_result(self, result, feedback, transition=None, timestamp=None):
         if not self.output_path:
             return
 
+        if timestamp is None:
+            timestamp = self.current_video_timestamp()
+
         output = {
-            "timestamp": time.time(),
+            "timestamp": timestamp,
             "case": result["case"],
             "final_score": result["final_score"],
             "biomechanical_risk": result["biomechanical_risk"],

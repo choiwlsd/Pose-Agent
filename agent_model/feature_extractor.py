@@ -126,6 +126,9 @@ class FeatureExtractor:
     def update_buffer(self, features):
         self.frame_counter += 1
 
+        if self.frame_counter % self.stride != 0:
+            return None
+
         if self.frame_counter % self.stride == 0:
             # sequence buffer에 feature 벡터 추가
             # 버퍼가 sequence_length개 채워지면 (sequence_length, feature_dim) 형태의 numpy array 반환, 그렇지 않으면 None 반환
