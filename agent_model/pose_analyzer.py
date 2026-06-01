@@ -1,5 +1,4 @@
 from pathlib import Path
-
 import joblib
 import numpy as np
 
@@ -7,13 +6,6 @@ import numpy as np
 class PoseFeedbackAnalyzer:
     """
     Runtime posture analyzer.
-
-    Input:
-        (6,)      -> summarized feature vector
-        (30, 6)   -> sequence feature input
-
-    Output:
-        posture feedback + risk analysis
     """
 
     FEATURE_CONTEXT = {
@@ -44,70 +36,46 @@ class PoseFeedbackAnalyzer:
     }
 
     COACHING_RULES = {
-        0: lambda z: "왼어깨에 힘을 빼고 손과 어깨의 거리를 일정하게 유지하세요.",
-        1: lambda z: "양쪽 어깨의 높이를 일정하게 유지하세요.",
-        2: lambda z: "왼손목의 힘을 빼고 손가락 중심으로 운지하세요.",
-        3: lambda z: "왼팔의 각도를 일정하게 유지하여 악기를 안정적으로 지지하세요.",
-        4: lambda z: "오른팔이 접히고 있습니다. 팔꿈치 높이를 유지하며 자연스럽게 보잉하세요.",
-        5: lambda z: "오른손목에 힘을 빼고 활이 직선으로 움직일 수 있도록 정렬을 유지하세요.",
+        0: lambda z: "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요.",
+        1: lambda z: "양쪽 어깨 높이를 일정하게 유지하세요.",
+        2: lambda z: "왼손목 힘을 빼고 손가락 중심으로 운지하세요.",
+        3: lambda z: "왼팔 각도를 안정적으로 유지하세요.",
+        4: lambda z: "오른팔 각도를 유지하며 자연스럽게 보잉하세요.",
+        5: lambda z: "오른손목 힘을 빼고 활의 직선 움직임을 유지하세요.",
     }
 
     def __init__(self, model_path="model/pose_model.pkl"):
         model_path = Path(model_path)
 
         if not model_path.exists():
-            raise FileNotFoundError(
-                f"Model file not found: {model_path}"
-            )
+            raise FileNotFoundError(f"Model file not found: {model_path}")
 
         bundle = joblib.load(model_path)
-
         self.model = bundle["model"]
         self.feature_mean = bundle["feature_mean"]
         self.feature_std = bundle["feature_std"]
 
     @staticmethod
     def summarize_sequence(sequence):
-        """
-        Convert sequence (30, 6) -> feature vector (6,)
-        """
-
         sequence = np.asarray(sequence, dtype=np.float32)
-
-        return np.median(sequence, axis=-2)
+        return np.median(sequence, axis=0)
 
     def analyze(self, sample):
-        """
-        Analyze posture sample.
-
-        Input:
-            sample.shape == (6,)
-            or
-            sample.shape == (30, 6)
-        """
 
         feature_vector = self._to_feature_vector(sample)
 
-        bad_probability = self._predict_bad_probability(
-            feature_vector
-        )
+        bad_probability = self._predict_bad_probability(feature_vector)
 
         explanations = []
-
         biomechanical_risk = 0.0
-
         severe_count = 0
         danger_count = 0
 
-        scaled_sample = (
-            self.model.named_steps["scaler"]
-            .transform(feature_vector.reshape(1, -1))[0]
-        )
+        scaled_sample = self.model.named_steps["scaler"].transform(
+            feature_vector.reshape(1, -1)
+        )[0]
 
-        weights = (
-            self.model.named_steps["classifier"]
-            .coef_[0]
-        )
+        weights = self.model.named_steps["classifier"].coef_[0]
 
         for idx, value in enumerate(feature_vector):
 
@@ -116,29 +84,19 @@ class PoseFeedbackAnalyzer:
                 / (self.feature_std[idx] + 1e-8)
             )
 
-            risk_z = self._compute_directional_risk(
-                idx,
-                z_score,
-            )
+            risk_z = self._compute_directional_risk(idx, z_score)
 
             status = self._classify_deviation(risk_z)
 
-            contribution = (
-                scaled_sample[idx] * weights[idx]
-            )
-
-            bad_contribution = max(
-                0.0,
-                float(contribution),
-            )
-
-            biomechanical_risk += risk_z / len(self.FEATURE_CONTEXT)
-
             if status == "심각":
                 severe_count += 1
-
             elif status == "주의":
                 danger_count += 1
+
+            contribution = scaled_sample[idx] * weights[idx]
+            bad_contribution = max(0.0, float(contribution))
+
+            biomechanical_risk += risk_z
 
             explanations.append({
                 "feature_index": idx,
@@ -152,7 +110,7 @@ class PoseFeedbackAnalyzer:
                 "warning": self.FEATURE_PROBLEMS[idx],
                 "coaching": (
                     self.COACHING_RULES[idx](z_score)
-                    if risk_z >= 2
+                    if status != "정상"
                     else None
                 ),
             })
@@ -169,8 +127,7 @@ class PoseFeedbackAnalyzer:
                 * 100
             )
 
-        explanations = sorted(
-            explanations,
+        explanations.sort(
             key=lambda item: (
                 item["risk_z"],
                 item["bad_contribution"],
@@ -187,6 +144,7 @@ class PoseFeedbackAnalyzer:
             final_score,
             severe_count,
             danger_count,
+            total_bad_contribution,
         )
 
         return {
@@ -206,22 +164,14 @@ class PoseFeedbackAnalyzer:
         }
 
     def analyze_many(self, samples):
-        """
-        Batch analysis.
-        """
-
         samples = np.asarray(samples, dtype=np.float32)
 
         if samples.ndim not in (2, 3):
             raise ValueError(
-                "samples must have shape "
-                "(N, 6) or (N, 30, 6)"
+                "samples must have shape (N, 6) or (N, 30, 6)"
             )
 
-        return [
-            self.analyze(sample)
-            for sample in samples
-        ]
+        return [self.analyze(s) for s in samples]
 
     def _to_feature_vector(self, sample):
         sample = np.asarray(sample, dtype=np.float32)
@@ -232,44 +182,31 @@ class PoseFeedbackAnalyzer:
         if sample.ndim == 2 and sample.shape[1] == 6:
             return self.summarize_sequence(sample)
 
-        raise ValueError(
-            "sample must have shape "
-            "(6,) or (sequence_length, 6). "
-            f"Got {sample.shape}."
-        )
+        raise ValueError("Invalid input shape")
 
-    def _predict_bad_probability(self, feature_vector):
-
+    def _predict_bad_probability(self, x):
         return float(
-            self.model.predict_proba(
-                feature_vector.reshape(1, -1)
-            )[0][1]
+            self.model.predict_proba(x.reshape(1, -1))[0][1]
         )
 
-    def _compute_directional_risk(
-        self,
-        idx,
-        z_score,
-    ):
+    def _compute_directional_risk(self, idx, z):
+
         direction = self.FEATURE_DIRECTIONS[idx]
 
         if direction == "high":
-            return max(0.0, float(z_score))
-
+            return max(0.0, float(z))
         if direction == "low":
-            return max(0.0, float(-z_score))
+            return max(0.0, float(-z))
 
-        return abs(float(z_score))
+        return abs(float(z))
 
     @staticmethod
     def _classify_deviation(risk_z):
 
         if risk_z <= 1.5:
             return "정상"
-
         if risk_z <= 3:
             return "주의"
-
         return "심각"
 
     @staticmethod
@@ -277,11 +214,12 @@ class PoseFeedbackAnalyzer:
         classifier_probability,
         biomechanical_risk,
     ):
+
         global_risk = classifier_probability * 100
 
         biomech_score = min(
             100,
-            biomechanical_risk / len(PoseFeedbackAnalyzer.FEATURE_CONTEXT) * 100,
+            biomechanical_risk / 6 * 100,
         )
 
         return (
@@ -294,18 +232,23 @@ class PoseFeedbackAnalyzer:
         final_score,
         severe_count,
         danger_count,
+        total_bad_contribution,
     ):
 
-        if severe_count >= 3:
-            return "주의"
-
-        if danger_count >= 2:
-            return "주의"
 
         if final_score < 45:
             return "안정"
+        
+        if severe_count <= 2 and final_score < 70:
+            return "주의"
 
-        if final_score < 60:
+        if final_score < 70:
+            return "주의"
+        
+        if final_score >= 70:
+            return "위험"
+
+        if danger_count < 2:
             return "주의"
 
         return "위험"
@@ -317,45 +260,49 @@ class PoseFeedbackAnalyzer:
         top_k=3,
     ):
 
-        coaching = [
-            item["coaching"]
-            for item in explanations[:top_k]
-            if item["coaching"] is not None
+        # 1) 정상 제외 + risk_percent 0.0 제외
+        valid_items = [
+            item for item in explanations
+            if item["status"] != "정상" and item["risk_percent"] > 0.0
         ]
 
-        if not coaching:
-            coaching = [
-                "현재 자세는 안정적으로 유지되고 있습니다."
-            ]
+        # 2) risk_percent 기준 정렬 (내림차순)
+        valid_items.sort(key=lambda x: x["risk_percent"], reverse=True)
 
-        return {
+        # 3) top_k 제한 (최대 3개)
+        valid_items = valid_items[:top_k]
+
+        # 4) coaching 규칙
+        if valid_items:
+            # 가장 위험한 1개 coaching만 사용
+            coaching = [valid_items[0]["coaching"]]
+
+        if posture_case == "안정":
+            coaching = ["현재 자세는 안정적입니다. 계속 유지하세요!"]
+
+        result = {
             "posture": posture_case,
-            "top_issues": [
-                {
-                    "feature": item["feature"],
-                    "status": item["status"],
-                    "risk_percent": float(
-                        round(item["risk_percent"], 2)
-                    ),
-                    "coaching": item["coaching"],
-                }
-                for item in explanations[:top_k]
-            ],
             "coaching": coaching,
         }
 
+        # 5) top_issues 구성
+        if valid_items:
+            result["top_issues"] = [
+                {
+                    "feature": item["feature"],
+                    "status": item["status"],
+                    "risk_percent": round(item["risk_percent"], 2),
+                    "coaching": item["coaching"],
+                }
+                for item in valid_items
+            ]
 
-if __name__ == "__main__":
+        # 6) severe_count & danger_count 추가
+        result["severe_count"] = sum(
+            1 for item in explanations if item["status"] == "심각"
+        )
+        result["danger_count"] = sum(
+            1 for item in explanations if item["status"] == "주의"
+        )
 
-    analyzer = PoseFeedbackAnalyzer(
-        "model/pose_model.pkl"
-    )
-
-    dummy_sequence = np.random.rand(30, 6)
-
-    result = analyzer.analyze(dummy_sequence)
-
-    from pprint import pprint
-
-    pprint(result)
-
+        return result
