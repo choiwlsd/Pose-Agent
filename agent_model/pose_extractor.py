@@ -21,8 +21,8 @@ CONNECTIONS = [
 
 
 class PoseExtractor:
-    def __init__(self, webcam, model_path="pose_landmarker_lite.task", presence_threshold=0.5):
-        self.webcam = webcam
+    def __init__(self, source, model_path="pose_landmarker_lite.task", presence_threshold=0.5):
+        self.source = source
         self.presence_threshold = presence_threshold
         self.latest_result = None
         self.timestamp = 0
@@ -91,3 +91,27 @@ class PoseExtractor:
 
     def release(self):
         self.landmarker.close()
+
+    def run(self, frame_source=None, callback=None, display=True):
+        if frame_source is None:
+            frame_source = self.source
+
+        try:
+            while frame_source.isOpened():
+                ret, frame = frame_source.read()
+                if not ret:
+                    break
+
+                self.timestamp += 1
+                landmarks, annotated_frame = self.extract(frame)
+
+                if callback:
+                    callback(landmarks)
+
+                if display:
+                    cv2.imshow("PoseExtractor", annotated_frame)
+                    if cv2.waitKey(1) & 0xFF == ord("q"):
+                        break
+
+        finally:
+            self.release()

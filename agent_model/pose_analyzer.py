@@ -34,7 +34,7 @@ class PoseFeedbackAnalyzer:
         5: "both",
     }
 
-    FEATURE_FEEDBACK = {
+    FEATURE_PROBLEMS = {
         0: "왼손 포지션이 흔들리며 손과 어깨의 정렬이 불안정합니다.",
         1: "양쪽 어깨 높이 차이가 발생하여 상체 균형이 무너지고 있습니다.",
         2: "왼손목 움직임이 과도하여 운지 안정성이 저하되고 있습니다.",
@@ -149,7 +149,7 @@ class PoseFeedbackAnalyzer:
                 "status": status,
                 "contribution": float(contribution),
                 "bad_contribution": bad_contribution,
-                "warning": self.FEATURE_FEEDBACK[idx],
+                "warning": self.FEATURE_PROBLEMS[idx],
                 "coaching": (
                     self.COACHING_RULES[idx](z_score)
                     if risk_z >= 2

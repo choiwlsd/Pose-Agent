@@ -1,5 +1,6 @@
 import os
 import sys
+import cv2
 import numpy as np
 sys.path.append(os.path.join(os.path.dirname(__file__), '..')) # 상위 폴더 경로 추가
 from agent_model.pose_extractor import PoseExtractor
@@ -17,29 +18,37 @@ class DatasetCollector:
         self.labels = []     # (N,) (0: good, 1: bad)
 
     def process_video(self, video_path, label, save_path):
-        # 영상 1개 처리 → (N, 30, 6) sequence 추출 후 바로 저장
-        sequences = []  # 영상마다 시퀀스 초기화
-        featureExtractor = FeatureExtractor() # 영상마다 버퍼 초기화
-        poseExtractor = PoseExtractor(source=video_path)
+        sequences = []
+        featureExtractor = FeatureExtractor()
+
+        cap = cv2.VideoCapture(video_path)
+        poseExtractor = PoseExtractor(source=cap)
 
         def on_landmarks(landmarks):
+            if landmarks is None:
+                return
+
             features = featureExtractor.compute(landmarks)
             sequence = featureExtractor.update_buffer(features)
+
             if sequence is not None:
                 sequences.append(sequence)
 
-        poseExtractor.run(callback=on_landmarks, display=False) # display=False: 영상 출력 없이 처리
+        poseExtractor.run(frame_source=cap, callback=on_landmarks, display=False)
+
+        cap.release()
+        poseExtractor.release()
 
         if not sequences:
-            print(f"  경고: sequence가 없어요 → {os.path.basename(video_path)}")
+            print(f"  경고: sequence 없음 → {video_path}")
             return
-        
-        sequences_np = np.array(sequences, dtype=np.float32)  # (N, 30, 6)
-        labels_np    = np.full(len(sequences), label, dtype=np.int64) #
+
+        sequences_np = np.array(sequences, dtype=np.float32)
+        labels_np = np.full(len(sequences), label, dtype=np.int64)
 
         np.savez(save_path, sequences=sequences_np, labels=labels_np)
-        print(f"  완료: {os.path.basename(video_path)} → {sequences_np.shape} → {save_path}")
 
+        print(f"완료: {video_path} → {sequences_np.shape}")
 
     def process_folder(self, folder_path, label):
         if isinstance(label, str):

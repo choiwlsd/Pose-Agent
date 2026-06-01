@@ -12,7 +12,7 @@ from tools.visualizer import print_features
 class PoseAgent:
     def __init__(
         self,
-        webcam,
+        source,
         pose_extractor=None,
         feature_extractor=None,
         analyzer=None,
@@ -20,7 +20,7 @@ class PoseAgent:
         supervisor=None,
         feedback_interval_seconds=5.0,
     ):
-        self.webcam = webcam
+        self.source = source
         self.fps = self._get_capture_fps()
 
         # 몇 초마다 피드백을 줄지 설정 (현재: 5초마다)
@@ -30,7 +30,7 @@ class PoseAgent:
         self.frame_index = 0
 
         # 컴포넌트 초기화
-        self.pose_extractor = pose_extractor or PoseExtractor(webcam)
+        self.pose_extractor = pose_extractor or PoseExtractor(self.source)
         self.feature_extractor = feature_extractor or FeatureExtractor(
             sequence_length=max(1, int(round(self.fps * feedback_interval_seconds))),
             stride=1,
@@ -45,8 +45,8 @@ class PoseAgent:
     # 메인 루프: 웹캠 프레임 읽기 > 자세 분석(step) > 피드백 출력
     def run(self, display=True):
         try:
-            while self.webcam.isOpened():
-                ret, frame = self.webcam.read()
+            while self.source.isOpened():
+                ret, frame = self.source.read()
                 if not ret:
                     break
 
@@ -149,13 +149,13 @@ class PoseAgent:
 
     # 웹캠 FPS 가져오기 (기본값: 30 FPS)
     def _get_capture_fps(self):
-        fps = self.webcam.get(cv2.CAP_PROP_FPS)
+        fps = self.source.get(cv2.CAP_PROP_FPS)
         if fps and fps > 0:
             return fps
         return 30.0
 
     def current_video_timestamp(self):
-        timestamp = self.webcam.get(cv2.CAP_PROP_POS_MSEC) / 1000.0
+        timestamp = self.source.get(cv2.CAP_PROP_POS_MSEC) / 1000.0
         if timestamp > 0:
             return timestamp
         return self.frame_index / self.fps
@@ -236,5 +236,5 @@ class PoseAgent:
 
     def release(self):
         self.pose_extractor.release()
-        self.webcam.release()
+        self.source.release()
         cv2.destroyAllWindows()
