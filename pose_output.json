@@ -274,3 +274,492 @@
         }
     }
 }
+{
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 1,
+        "state": "SHOULDER_IMBALANCE",
+        "action_id": "PA-02",
+        "action": "SHOULDER_BALANCE",
+        "feedback": "양쪽 어깨 높이를 일정하게 유지하세요.",
+        "reward": null,
+        "q": 0.0,
+        "meta": {
+            "feature": "양쪽 어깨의 높이 차이",
+            "risk_percent": 94.85,
+            "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+        }
+    },
+    "pose_agent_meta": {
+        "timestamp": 40112.01,
+        "case": "주의",
+        "final_score": 47.94,
+        "biomechanical_risk": 10.3,
+        "reward": null,
+        "top_issues": [
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 94.85,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            }
+        ],
+        "coaching": [
+            "양쪽 어깨 높이를 일정하게 유지하세요."
+        ],
+        "transition": null
+    }
+}
+{
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 2,
+        "state": "SHOULDER_IMBALANCE",
+        "action_id": "SA-00",
+        "action": "CALL_SUPERVISOR",
+        "feedback": "상위 Supervisor에게 자세 판단을 위임합니다.",
+        "reward": -0.0875,
+        "q": 0.0,
+        "meta": {
+            "feature": "양쪽 어깨의 높이 차이",
+            "risk_percent": 94.11,
+            "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+        }
+    },
+    "pose_agent_meta": {
+        "timestamp": 40115.01,
+        "case": "주의",
+        "final_score": 56.69,
+        "biomechanical_risk": 14.2924,
+        "reward": {
+            "reward": -0.0875,
+            "reason": "posture worsened by 8.75 score points",
+            "score_delta": -8.75
+        },
+        "top_issues": [
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 94.11,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            },
+            {
+                "feature": "왼손목-왼어깨 거리",
+                "status": "주의",
+                "risk_percent": 5.89,
+                "coaching": "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요."
+            }
+        ],
+        "coaching": [
+            "양쪽 어깨 높이를 일정하게 유지하세요."
+        ],
+        "transition": {
+            "previous_state": "SHOULDER_IMBALANCE",
+            "current_state": "SHOULDER_IMBALANCE",
+            "action": "SHOULDER_BALANCE",
+            "updated_q": -0.008749999999999999
+        }
+    }
+}
+{
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 3,
+        "state": "SHOULDER_IMBALANCE",
+        "action_id": "SA-00",
+        "action": "CALL_SUPERVISOR",
+        "feedback": "상위 Supervisor에게 자세 판단을 위임합니다.",
+        "reward": 0.0861,
+        "q": 0.00861,
+        "meta": {
+            "feature": "양쪽 어깨의 높이 차이",
+            "risk_percent": 74.66,
+            "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+        }
+    },
+    "pose_agent_meta": {
+        "timestamp": 40120.01,
+        "case": "주의",
+        "final_score": 48.08,
+        "biomechanical_risk": 15.4832,
+        "reward": {
+            "reward": 0.0861,
+            "reason": "posture improved by 8.61 score points",
+            "score_delta": 8.61
+        },
+        "top_issues": [
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 74.66,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            },
+            {
+                "feature": "오른손목 각도",
+                "status": "주의",
+                "risk_percent": 25.34,
+                "coaching": "오른손목 힘을 빼고 활의 직선 움직임을 유지하세요."
+            }
+        ],
+        "coaching": [
+            "양쪽 어깨 높이를 일정하게 유지하세요."
+        ],
+        "transition": {
+            "previous_state": "SHOULDER_IMBALANCE",
+            "current_state": "SHOULDER_IMBALANCE",
+            "action": "CALL_SUPERVISOR",
+            "updated_q": 0.00861
+        }
+    }
+}
+{
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 4,
+        "state": "SHOULDER_IMBALANCE",
+        "action_id": "SA-00",
+        "action": "CALL_SUPERVISOR",
+        "feedback": "상위 Supervisor에게 자세 판단을 위임합니다.",
+        "reward": 0.016999999999999956,
+        "q": 0.010223899999999996,
+        "meta": {
+            "feature": "양쪽 어깨의 높이 차이",
+            "risk_percent": 88.98,
+            "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+        }
+    },
+    "pose_agent_meta": {
+        "timestamp": 40125.01,
+        "case": "주의",
+        "final_score": 46.38,
+        "biomechanical_risk": 11.0257,
+        "reward": {
+            "reward": 0.016999999999999956,
+            "reason": "posture improved by 1.70 score points",
+            "score_delta": 1.7
+        },
+        "top_issues": [
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 88.98,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            },
+            {
+                "feature": "왼손목-왼어깨 거리",
+                "status": "주의",
+                "risk_percent": 11.02,
+                "coaching": "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요."
+            }
+        ],
+        "coaching": [
+            "양쪽 어깨 높이를 일정하게 유지하세요."
+        ],
+        "transition": {
+            "previous_state": "SHOULDER_IMBALANCE",
+            "current_state": "SHOULDER_IMBALANCE",
+            "action": "CALL_SUPERVISOR",
+            "updated_q": 0.010223899999999996
+        }
+    }
+}
+{
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 1,
+        "state": "GOOD",
+        "action_id": "PA-00",
+        "action": "POSITIVE_T",
+        "feedback": "좋은 자세입니다. 지금 자세를 유지하세요.",
+        "reward": null,
+        "q": 0.0,
+        "meta": {}
+    },
+    "pose_agent_meta": {
+        "timestamp": 43552.88,
+        "case": "안정",
+        "final_score": 40.01,
+        "biomechanical_risk": 51.4687,
+        "reward": null,
+        "top_issues": [
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 97.22,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            }
+        ],
+        "coaching": [
+            "현재 자세는 안정적입니다. 계속 유지하세요!"
+        ],
+        "transition": null
+    }
+}
+{
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 2,
+        "state": "GOOD",
+        "action_id": "PA-00",
+        "action": "POSITIVE_T",
+        "feedback": "좋은 자세입니다. 지금 자세를 유지하세요.",
+        "reward": 0.2001,
+        "q": 0.02001,
+        "meta": {}
+    },
+    "pose_agent_meta": {
+        "timestamp": 43555.01,
+        "case": "안정",
+        "final_score": 40.0,
+        "biomechanical_risk": 49.9388,
+        "reward": {
+            "reward": 0.2001,
+            "reason": "posture improved by 0.01 score points",
+            "score_delta": 0.01
+        },
+        "top_issues": [
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 96.91,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            }
+        ],
+        "coaching": [
+            "현재 자세는 안정적입니다. 계속 유지하세요!"
+        ],
+        "transition": {
+            "previous_state": "GOOD",
+            "current_state": "GOOD",
+            "action": "POSITIVE_T",
+            "updated_q": 0.02001
+        }
+    }
+}
+{
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 3,
+        "state": "GOOD",
+        "action_id": "PA-00",
+        "action": "POSITIVE_T",
+        "feedback": "좋은 자세입니다. 지금 자세를 유지하세요.",
+        "reward": 0.2,
+        "q": 0.0398099,
+        "meta": {}
+    },
+    "pose_agent_meta": {
+        "timestamp": 43560.01,
+        "case": "안정",
+        "final_score": 40.0,
+        "biomechanical_risk": 44.8628,
+        "reward": {
+            "reward": 0.2,
+            "reason": "posture improved by 0.00 score points",
+            "score_delta": 0.0
+        },
+        "top_issues": [
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 95.1,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            }
+        ],
+        "coaching": [
+            "현재 자세는 안정적입니다. 계속 유지하세요!"
+        ],
+        "transition": {
+            "previous_state": "GOOD",
+            "current_state": "GOOD",
+            "action": "POSITIVE_T",
+            "updated_q": 0.0398099
+        }
+    }
+}
+{
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 4,
+        "state": "GOOD",
+        "action_id": "PA-00",
+        "action": "POSITIVE_T",
+        "feedback": "좋은 자세입니다. 지금 자세를 유지하세요.",
+        "reward": 0.1693,
+        "q": 0.056341801,
+        "meta": {}
+    },
+    "pose_agent_meta": {
+        "timestamp": 43565.01,
+        "case": "안정",
+        "final_score": 43.07,
+        "biomechanical_risk": 16.0412,
+        "reward": {
+            "reward": 0.1693,
+            "reason": "posture improved by -3.07 score points",
+            "score_delta": -3.07
+        },
+        "top_issues": [
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 100.0,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            }
+        ],
+        "coaching": [
+            "현재 자세는 안정적입니다. 계속 유지하세요!"
+        ],
+        "transition": {
+            "previous_state": "GOOD",
+            "current_state": "GOOD",
+            "action": "POSITIVE_T",
+            "updated_q": 0.056341801
+        }
+    }
+}
+{
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 5,
+        "state": "SHOULDER_IMBALANCE",
+        "action_id": "PA-02",
+        "action": "SHOULDER_BALANCE",
+        "feedback": "양쪽 어깨 높이를 일정하게 유지하세요.",
+        "reward": -0.42810000000000004,
+        "q": 0.0,
+        "meta": {
+            "feature": "양쪽 어깨의 높이 차이",
+            "risk_percent": 85.8,
+            "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+        }
+    },
+    "pose_agent_meta": {
+        "timestamp": 43570.01,
+        "case": "주의",
+        "final_score": 60.88,
+        "biomechanical_risk": 17.8065,
+        "reward": {
+            "reward": -0.42810000000000004,
+            "reason": "posture worsened by 17.81 score points",
+            "score_delta": -17.81
+        },
+        "top_issues": [
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 85.8,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            },
+            {
+                "feature": "왼손목-왼어깨 거리",
+                "status": "주의",
+                "risk_percent": 14.2,
+                "coaching": "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요."
+            }
+        ],
+        "coaching": [
+            "양쪽 어깨 높이를 일정하게 유지하세요."
+        ],
+        "transition": {
+            "previous_state": "GOOD",
+            "current_state": "SHOULDER_IMBALANCE",
+            "action": "POSITIVE_T",
+            "updated_q": 0.007897620899999992
+        }
+    }
+}
+{
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 6,
+        "state": "GOOD",
+        "action_id": "PA-00",
+        "action": "POSITIVE_T",
+        "feedback": "좋은 자세입니다. 지금 자세를 유지하세요.",
+        "reward": 0.6121000000000001,
+        "q": 0.007897620899999992,
+        "meta": {}
+    },
+    "pose_agent_meta": {
+        "timestamp": 43575.01,
+        "case": "안정",
+        "final_score": 44.67,
+        "biomechanical_risk": 14.1576,
+        "reward": {
+            "reward": 0.6121000000000001,
+            "reason": "posture improved by 16.21 score points",
+            "score_delta": 16.21
+        },
+        "top_issues": [
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 95.38,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            }
+        ],
+        "coaching": [
+            "현재 자세는 안정적입니다. 계속 유지하세요!"
+        ],
+        "transition": {
+            "previous_state": "SHOULDER_IMBALANCE",
+            "current_state": "GOOD",
+            "action": "SHOULDER_BALANCE",
+            "updated_q": 0.06192078588100001
+        }
+    }
+}
+{
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 7,
+        "state": "GOOD",
+        "action_id": "PA-00",
+        "action": "POSITIVE_T",
+        "feedback": "좋은 자세입니다. 지금 자세를 유지하세요.",
+        "reward": 0.20590000000000006,
+        "q": 0.028408644691,
+        "meta": {}
+    },
+    "pose_agent_meta": {
+        "timestamp": 43580.01,
+        "case": "안정",
+        "final_score": 44.08,
+        "biomechanical_risk": 27.6675,
+        "reward": {
+            "reward": 0.20590000000000006,
+            "reason": "posture improved by 0.59 score points",
+            "score_delta": 0.59
+        },
+        "top_issues": [
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 81.55,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            },
+            {
+                "feature": "왼손목-왼어깨 거리",
+                "status": "심각",
+                "risk_percent": 16.21,
+                "coaching": "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요."
+            },
+            {
+                "feature": "왼팔 각도",
+                "status": "주의",
+                "risk_percent": 2.24,
+                "coaching": "왼팔 각도를 안정적으로 유지하세요."
+            }
+        ],
+        "coaching": [
+            "현재 자세는 안정적입니다. 계속 유지하세요!"
+        ],
+        "transition": {
+            "previous_state": "GOOD",
+            "current_state": "GOOD",
+            "action": "POSITIVE_T",
+            "updated_q": 0.028408644691
+        }
+    }
+}

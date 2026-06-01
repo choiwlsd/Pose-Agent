@@ -1,5 +1,6 @@
 import cv2
 import mediapipe as mp
+from pathlib import Path
 
 BaseOptions = mp.tasks.BaseOptions
 PoseLandmarker = mp.tasks.vision.PoseLandmarker
@@ -19,16 +20,33 @@ CONNECTIONS = [
     (24, 26), (26, 28),
 ]
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_MODEL_PATH = PROJECT_ROOT / "pose_landmarker_lite.task"
+
+
+def resolve_model_path(model_path):
+    path = Path(model_path) if model_path is not None else DEFAULT_MODEL_PATH
+    candidates = [path] if path.is_absolute() else [path, PROJECT_ROOT / path]
+
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate.resolve()
+
+    checked_paths = ", ".join(str(candidate) for candidate in candidates)
+    raise FileNotFoundError(f"Model file not found. Checked: {checked_paths}")
+
 
 class PoseExtractor:
-    def __init__(self, source, model_path="pose_landmarker_lite.task", presence_threshold=0.5):
+    def __init__(self, source, model_path=None, presence_threshold=0.5):
         self.source = source
         self.presence_threshold = presence_threshold
         self.latest_result = None
         self.timestamp = 0
+        self.model_path = resolve_model_path(model_path)
+        self.model_asset_buffer = self.model_path.read_bytes()
 
         options = PoseLandmarkerOptions(
-            base_options=BaseOptions(model_asset_path=model_path),
+            base_options=BaseOptions(model_asset_buffer=self.model_asset_buffer),
             running_mode=VisionRunningMode.LIVE_STREAM,
             result_callback=self._on_result,
         )

@@ -2,6 +2,21 @@ from pathlib import Path
 import joblib
 import numpy as np
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_MODEL_PATH = PROJECT_ROOT / "model" / "pose_model.pkl"
+
+
+def resolve_model_path(model_path):
+    path = Path(model_path) if model_path is not None else DEFAULT_MODEL_PATH
+    candidates = [path] if path.is_absolute() else [path, PROJECT_ROOT / path]
+
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate.resolve()
+
+    checked_paths = ", ".join(str(candidate) for candidate in candidates)
+    raise FileNotFoundError(f"Model file not found. Checked: {checked_paths}")
+
 
 class PoseFeedbackAnalyzer:
     """
@@ -44,13 +59,10 @@ class PoseFeedbackAnalyzer:
         5: lambda z: "오른손목 힘을 빼고 활의 직선 움직임을 유지하세요.",
     }
 
-    def __init__(self, model_path="model/pose_model.pkl"):
-        model_path = Path(model_path)
+    def __init__(self, model_path=None):
+        self.model_path = resolve_model_path(model_path)
 
-        if not model_path.exists():
-            raise FileNotFoundError(f"Model file not found: {model_path}")
-
-        bundle = joblib.load(model_path)
+        bundle = joblib.load(self.model_path)
         self.model = bundle["model"]
         self.feature_mean = bundle["feature_mean"]
         self.feature_std = bundle["feature_std"]
