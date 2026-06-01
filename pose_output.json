@@ -1,216 +1,250 @@
 {
-    "timestamp": 5.072144444444445,
-    "case": "위험",
-    "final_score": 99.9,
-    "biomechanical_risk": 30.54,
+    "timestamp": 5.048900000000001,
+    "case": "주의",
+    "final_score": 7.48,
+    "biomechanical_risk": 1.0513,
     "top_issues": [
         {
-            "feature": "왼팔 각도",
-            "status": "심각",
-            "risk_percent": 49.83,
-            "coaching": "왼팔 각도를 일정하게 유지하세요."
-        },
-        {
             "feature": "왼손목-왼어깨 거리",
-            "status": "심각",
-            "risk_percent": 29.75,
-            "coaching": "왼손 위치를 몸 중심 방향으로 안정화하세요."
+            "status": "주의",
+            "risk_percent": 42.44,
+            "coaching": null
         },
         {
-            "feature": "왼손목 속도",
-            "status": "심각",
-            "risk_percent": 7.67,
-            "coaching": "손목에 힘이 과하게 들어가고 있습니다."
+            "feature": "왼팔 각도",
+            "status": "주의",
+            "risk_percent": 0.0,
+            "coaching": null
+        },
+        {
+            "feature": "오른손목 각도",
+            "status": "정상",
+            "risk_percent": 57.56,
+            "coaching": null
         }
     ],
     "coaching": [
-        "왼팔 각도를 일정하게 유지하세요.",
-        "왼손 위치를 몸 중심 방향으로 안정화하세요.",
-        "손목에 힘이 과하게 들어가고 있습니다."
+        "현재 자세는 안정적으로 유지되고 있습니다."
     ],
     "transition": null
 }
 {
-    "timestamp": 10.013755555555557,
-    "case": "위험",
-    "final_score": 99.99,
-    "biomechanical_risk": 30.8891,
+    "timestamp": 10.022411111111111,
+    "case": "주의",
+    "final_score": 4.96,
+    "biomechanical_risk": 0.6858,
     "top_issues": [
         {
-            "feature": "왼팔 각도",
-            "status": "심각",
-            "risk_percent": 40.6,
-            "coaching": "왼팔 각도를 일정하게 유지하세요."
-        },
-        {
             "feature": "왼손목-왼어깨 거리",
-            "status": "심각",
-            "risk_percent": 32.01,
-            "coaching": "왼손 위치를 몸 중심 방향으로 안정화하세요."
+            "status": "주의",
+            "risk_percent": 91.22,
+            "coaching": null
         },
         {
-            "feature": "오른팔 각도",
-            "status": "심각",
-            "risk_percent": 13.19,
-            "coaching": "오른팔을 과하게 벌리지 마세요."
+            "feature": "왼팔 각도",
+            "status": "주의",
+            "risk_percent": 0.0,
+            "coaching": null
+        },
+        {
+            "feature": "양쪽 팔꿈치 거리",
+            "status": "정상",
+            "risk_percent": 0.0,
+            "coaching": null
         }
     ],
     "coaching": [
-        "왼팔 각도를 일정하게 유지하세요.",
-        "왼손 위치를 몸 중심 방향으로 안정화하세요.",
-        "오른팔을 과하게 벌리지 마세요."
+        "현재 자세는 안정적으로 유지되고 있습니다."
     ],
     "transition": {
         "previous_state": [
-            "LEFT_ARM",
+            "LEFT_WRIST",
             0
         ],
         "current_state": [
-            "LEFT_ARM",
+            "LEFT_WRIST",
             1
         ],
         "action": "SA-12_WRIST_STRAIGHTEN",
         "reward": -0.1,
         "reason": "posture did not meaningfully change",
-        "score_delta": -0.09,
+        "score_delta": 2.52,
         "updated_q": 0.024
     }
 }
 {
-    "timestamp": 15.020466666666668,
-    "case": "위험",
-    "final_score": 99.98,
-    "biomechanical_risk": 32.713,
+    "timestamp": 15.027466666666667,
+    "case": "주의",
+    "final_score": 7.02,
+    "biomechanical_risk": 0.9834,
     "top_issues": [
         {
-            "feature": "왼팔 각도",
-            "status": "심각",
-            "risk_percent": 42.61,
-            "coaching": "왼팔 각도를 일정하게 유지하세요."
+            "feature": "왼손목-왼어깨 거리",
+            "status": "주의",
+            "risk_percent": 41.29,
+            "coaching": null
         },
         {
-            "feature": "왼손목-왼어깨 거리",
-            "status": "심각",
-            "risk_percent": 24.65,
-            "coaching": "왼손 위치를 몸 중심 방향으로 안정화하세요."
+            "feature": "왼팔 각도",
+            "status": "주의",
+            "risk_percent": 0.0,
+            "coaching": null
         },
         {
             "feature": "오른손목 각도",
-            "status": "심각",
-            "risk_percent": 13.39,
-            "coaching": "오른손목 정렬을 유지하세요."
+            "status": "정상",
+            "risk_percent": 58.71,
+            "coaching": null
         }
     ],
     "coaching": [
-        "왼팔 각도를 일정하게 유지하세요.",
-        "왼손 위치를 몸 중심 방향으로 안정화하세요.",
-        "오른손목 정렬을 유지하세요."
+        "현재 자세는 안정적으로 유지되고 있습니다."
     ],
     "transition": {
         "previous_state": [
-            "LEFT_ARM",
+            "LEFT_WRIST",
             1
         ],
         "current_state": [
-            "LEFT_ARM",
+            "LEFT_WRIST",
             2
         ],
-        "action": "SA-13_ELBOW_RAISE",
+        "action": "SA-12_WRIST_STRAIGHTEN",
         "reward": -0.1,
         "reason": "posture did not meaningfully change",
-        "score_delta": 0.01,
+        "score_delta": -2.06,
         "updated_q": 0.218
     }
 }
 {
-    "timestamp": 20.029344444444444,
-    "case": "위험",
-    "final_score": 99.99,
-    "biomechanical_risk": 33.0806,
+    "timestamp": 20.00001111111111,
+    "case": "주의",
+    "final_score": 5.84,
+    "biomechanical_risk": 0.822,
     "top_issues": [
         {
-            "feature": "왼팔 각도",
-            "status": "심각",
-            "risk_percent": 41.37,
-            "coaching": "왼팔 각도를 일정하게 유지하세요."
-        },
-        {
             "feature": "왼손목-왼어깨 거리",
-            "status": "심각",
-            "risk_percent": 31.24,
-            "coaching": "왼손 위치를 몸 중심 방향으로 안정화하세요."
+            "status": "주의",
+            "risk_percent": 53.62,
+            "coaching": null
         },
         {
-            "feature": "오른팔 각도",
-            "status": "심각",
-            "risk_percent": 12.23,
-            "coaching": "오른팔을 과하게 벌리지 마세요."
+            "feature": "왼팔 각도",
+            "status": "주의",
+            "risk_percent": 0.0,
+            "coaching": null
+        },
+        {
+            "feature": "양쪽 팔꿈치 거리",
+            "status": "정상",
+            "risk_percent": 0.0,
+            "coaching": null
         }
     ],
     "coaching": [
-        "왼팔 각도를 일정하게 유지하세요.",
-        "왼손 위치를 몸 중심 방향으로 안정화하세요.",
-        "오른팔을 과하게 벌리지 마세요."
+        "현재 자세는 안정적으로 유지되고 있습니다."
     ],
     "transition": {
         "previous_state": [
-            "LEFT_ARM",
+            "LEFT_WRIST",
             2
         ],
         "current_state": [
-            "LEFT_ARM",
+            "LEFT_WRIST",
             3
         ],
-        "action": "SA-13_ELBOW_RAISE",
+        "action": "SA-12_WRIST_STRAIGHTEN",
         "reward": -0.4,
         "reason": "posture did not meaningfully change; same issue repeated too many times",
-        "score_delta": -0.01,
+        "score_delta": 1.18,
         "updated_q": 0.376
     }
 }
 {
-    "timestamp": 25.0014,
-    "case": "위험",
-    "final_score": 99.99,
-    "biomechanical_risk": 31.9991,
+    "timestamp": 25.00578888888889,
+    "case": "주의",
+    "final_score": 7.42,
+    "biomechanical_risk": 1.0671,
     "top_issues": [
         {
-            "feature": "왼팔 각도",
-            "status": "심각",
-            "risk_percent": 41.93,
-            "coaching": "왼팔 각도를 일정하게 유지하세요."
-        },
-        {
             "feature": "왼손목-왼어깨 거리",
-            "status": "심각",
-            "risk_percent": 30.11,
-            "coaching": "왼손 위치를 몸 중심 방향으로 안정화하세요."
+            "status": "주의",
+            "risk_percent": 60.72,
+            "coaching": "왼어깨에 힘을 빼고 손과 어깨의 거리를 일정하게 유지하세요."
         },
         {
-            "feature": "오른팔 각도",
-            "status": "심각",
-            "risk_percent": 12.2,
-            "coaching": "오른팔을 과하게 벌리지 마세요."
+            "feature": "왼팔 각도",
+            "status": "주의",
+            "risk_percent": 0.0,
+            "coaching": null
+        },
+        {
+            "feature": "양쪽 팔꿈치 거리",
+            "status": "정상",
+            "risk_percent": 0.0,
+            "coaching": null
         }
     ],
     "coaching": [
-        "왼팔 각도를 일정하게 유지하세요.",
-        "왼손 위치를 몸 중심 방향으로 안정화하세요.",
-        "오른팔을 과하게 벌리지 마세요."
+        "왼어깨에 힘을 빼고 손과 어깨의 거리를 일정하게 유지하세요."
     ],
     "transition": {
         "previous_state": [
-            "LEFT_ARM",
+            "LEFT_WRIST",
             3
         ],
         "current_state": [
-            "LEFT_ARM",
+            "LEFT_WRIST",
             3
         ],
         "action": "SA-18_SWITCH_POSTURE_REPEAT",
         "reward": -0.4,
         "reason": "posture did not meaningfully change; same issue repeated too many times",
-        "score_delta": 0.0,
+        "score_delta": -1.58,
         "updated_q": 0.656
+    }
+}
+{
+    "timestamp": 30.012044444444445,
+    "case": "주의",
+    "final_score": 5.91,
+    "biomechanical_risk": 0.796,
+    "top_issues": [
+        {
+            "feature": "왼손목-왼어깨 거리",
+            "status": "주의",
+            "risk_percent": 69.62,
+            "coaching": "왼어깨에 힘을 빼고 손과 어깨의 거리를 일정하게 유지하세요."
+        },
+        {
+            "feature": "왼팔 각도",
+            "status": "주의",
+            "risk_percent": 0.0,
+            "coaching": null
+        },
+        {
+            "feature": "양쪽 팔꿈치 거리",
+            "status": "정상",
+            "risk_percent": 0.0,
+            "coaching": null
+        }
+    ],
+    "coaching": [
+        "왼어깨에 힘을 빼고 손과 어깨의 거리를 일정하게 유지하세요."
+    ],
+    "transition": {
+        "previous_state": [
+            "LEFT_WRIST",
+            3
+        ],
+        "current_state": [
+            "LEFT_WRIST",
+            3
+        ],
+        "action": "SA-12_WRIST_STRAIGHTEN",
+        "reward": -0.4,
+        "reason": "posture did not meaningfully change; same issue repeated too many times",
+        "score_delta": 1.51,
+        "updated_q": 0.462
     }
 }

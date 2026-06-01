@@ -30,26 +30,26 @@ class PoseFeedbackAnalyzer:
         1: "both",
         2: "high",
         3: "both",
-        4: "high",
+        4: "low",
         5: "both",
     }
 
     FEATURE_FEEDBACK = {
-        0: "왼손과 어깨 간 정렬이 무너지고 있습니다.",
-        1: "양 팔의 간격 균형이 깨지고 있습니다.",
-        2: "손목 움직임이 과도하게 흔들리고 있습니다.",
-        3: "왼팔 각도가 비정상적으로 변형되고 있습니다.",
-        4: "오른팔이 과도하게 벌어지고 있습니다.",
-        5: "오른손목 정렬이 무너지고 있습니다.",
+        0: "왼손 포지션이 흔들리며 손과 어깨의 정렬이 불안정합니다.",
+        1: "양팔의 높이와 간격을 일정하게 유지하며 균형 잡힌 자세를 만들어보세요.",
+        2: "왼손목 움직임이 과도하여 운지 안정성이 저하되고 있습니다.",
+        3: "왼팔 자세가 흐트러지며 바이올린 지지 자세가 불안정합니다.",
+        4: "오른팔 각도가 감소하며 보잉 자세가 무너지고 있습니다.",
+        5: "오른손목 정렬이 흐트러져 활의 움직임이 불안정합니다.",
     }
 
     COACHING_RULES = {
-        0: lambda z: "왼손 위치를 몸 중심 방향으로 안정화하세요.",
+        0: lambda z: "왼어깨에 힘을 빼고 손과 어깨의 거리를 일정하게 유지하세요.",
         1: lambda z: "양 팔 간격을 일정하게 유지하세요.",
-        2: lambda z: "손목에 힘이 과하게 들어가고 있습니다.",
-        3: lambda z: "왼팔 각도를 일정하게 유지하세요.",
-        4: lambda z: "오른팔을 과하게 벌리지 마세요.",
-        5: lambda z: "오른손목 정렬을 유지하세요.",
+        2: lambda z: "왼손목의 힘을 빼고 손가락 중심으로 운지하세요.",
+        3: lambda z: "왼팔의 각도를 일정하게 유지하여 악기를 안정적으로 지지하세요.",
+        4: lambda z: "오른팔이 접히고 있습니다. 팔꿈치 높이를 유지하며 자연스럽게 보잉하세요.",
+        5: lambda z: "오른손목에 힘을 빼고 활이 직선으로 움직일 수 있도록 정렬을 유지하세요.",
     }
 
     def __init__(self, model_path="model/pose_model.pkl"):
@@ -132,12 +132,12 @@ class PoseFeedbackAnalyzer:
                 float(contribution),
             )
 
-            biomechanical_risk += risk_z
+            biomechanical_risk += risk_z / len(self.FEATURE_CONTEXT)
 
             if status == "심각":
                 severe_count += 1
 
-            elif status == "위험":
+            elif status == "주의":
                 danger_count += 1
 
             explanations.append({
@@ -264,14 +264,11 @@ class PoseFeedbackAnalyzer:
     @staticmethod
     def _classify_deviation(risk_z):
 
-        if risk_z < 1:
+        if risk_z <= 1.5:
             return "정상"
 
-        if risk_z < 2:
+        if risk_z <= 3:
             return "주의"
-
-        if risk_z < 3:
-            return "위험"
 
         return "심각"
 
@@ -284,7 +281,7 @@ class PoseFeedbackAnalyzer:
 
         biomech_score = min(
             100,
-            biomechanical_risk * 20,
+            biomechanical_risk / len(PoseFeedbackAnalyzer.FEATURE_CONTEXT) * 100,
         )
 
         return (
@@ -299,17 +296,17 @@ class PoseFeedbackAnalyzer:
         danger_count,
     ):
 
-        if severe_count >= 1:
-            return "위험"
+        if severe_count >= 3:
+            return "주의"
 
         if danger_count >= 2:
-            return "위험"
+            return "주의"
 
         if final_score < 45:
             return "안정"
 
         if final_score < 60:
-            return "불안정"
+            return "주의"
 
         return "위험"
 
