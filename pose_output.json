@@ -1,206 +1,276 @@
 {
-    "timestamp": 5.007211111111111,
-    "case": "위험",
-    "final_score": 95.42,
-    "biomechanical_risk": 36.0861,
-    "top_issues": [
-        {
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 1,
+        "state": "LEFT_ARM_POSTURE",
+        "action_id": "PA-04",
+        "action": "ARM_POSTURE_CORRECT",
+        "feedback": "왼팔 각도를 안정적으로 유지하세요.",
+        "reward": null,
+        "q": 0.0,
+        "meta": {
             "feature": "왼팔 각도",
-            "status": "심각",
-            "risk_percent": 43.11,
+            "risk_percent": 42.64,
             "coaching": "왼팔 각도를 안정적으로 유지하세요."
-        },
-        {
-            "feature": "왼손목-왼어깨 거리",
-            "status": "심각",
-            "risk_percent": 26.87,
-            "coaching": "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요."
-        },
-        {
-            "feature": "양쪽 어깨의 높이 차이",
-            "status": "심각",
-            "risk_percent": 11.11,
-            "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
         }
-    ],
-    "coaching": [
-        "왼팔 각도를 안정적으로 유지하세요."
-    ],
-    "transition": null
-}
-{
-    "timestamp": 10.013755555555557,
-    "case": "위험",
-    "final_score": 99.94,
-    "biomechanical_risk": 40.2102,
-    "top_issues": [
-        {
-            "feature": "양쪽 어깨의 높이 차이",
-            "status": "심각",
-            "risk_percent": 28.29,
-            "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
-        },
-        {
-            "feature": "왼팔 각도",
-            "status": "심각",
-            "risk_percent": 26.89,
-            "coaching": "왼팔 각도를 안정적으로 유지하세요."
-        },
-        {
-            "feature": "왼손목-왼어깨 거리",
-            "status": "심각",
-            "risk_percent": 21.04,
-            "coaching": "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요."
-        }
-    ],
-    "coaching": [
-        "양쪽 어깨 높이를 일정하게 유지하세요."
-    ],
-    "transition": {
-        "previous_state": [
-            "LEFT_ARM",
-            0
+    },
+    "pose_agent_meta": {
+        "timestamp": 5.14,
+        "case": "위험",
+        "final_score": 98.01,
+        "biomechanical_risk": 31.4892,
+        "reward": null,
+        "top_issues": [
+            {
+                "feature": "왼팔 각도",
+                "status": "심각",
+                "risk_percent": 42.64,
+                "coaching": "왼팔 각도를 안정적으로 유지하세요."
+            },
+            {
+                "feature": "왼손목-왼어깨 거리",
+                "status": "심각",
+                "risk_percent": 25.1,
+                "coaching": "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요."
+            },
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 15.63,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            }
         ],
-        "current_state": [
-            "LEFT_ARM",
-            1
+        "coaching": [
+            "왼팔 각도를 안정적으로 유지하세요."
         ],
-        "action": "SA-12_WRIST_STRAIGHTEN",
-        "reward": -0.4,
-        "reason": "posture score became slightly worse",
-        "score_delta": -4.52,
-        "updated_q": -0.066
+        "transition": null
     }
 }
 {
-    "timestamp": 15.020466666666668,
-    "case": "위험",
-    "final_score": 99.76,
-    "biomechanical_risk": 35.5849,
-    "top_issues": [
-        {
-            "feature": "왼팔 각도",
-            "status": "심각",
-            "risk_percent": 31.94,
-            "coaching": "왼팔 각도를 안정적으로 유지하세요."
-        },
-        {
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 2,
+        "state": "LEFT_ARM_POSTURE",
+        "action_id": "SA-00",
+        "action": "CALL_SUPERVISOR",
+        "feedback": "상위 Supervisor에게 자세 판단을 위임합니다.",
+        "reward": -0.019399999999999976,
+        "q": 0.0,
+        "meta": {
             "feature": "양쪽 어깨의 높이 차이",
-            "status": "심각",
-            "risk_percent": 27.32,
+            "risk_percent": 28.44,
             "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
-        },
-        {
-            "feature": "왼손목-왼어깨 거리",
-            "status": "심각",
-            "risk_percent": 19.35,
-            "coaching": "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요."
         }
-    ],
-    "coaching": [
-        "왼팔 각도를 안정적으로 유지하세요."
-    ],
-    "transition": {
-        "previous_state": [
-            "LEFT_ARM",
-            1
+    },
+    "pose_agent_meta": {
+        "timestamp": 10.01,
+        "case": "위험",
+        "final_score": 99.95,
+        "biomechanical_risk": 37.818,
+        "reward": {
+            "reward": -0.019399999999999976,
+            "reason": "posture worsened by 1.94 score points",
+            "score_delta": -1.94
+        },
+        "top_issues": [
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 28.44,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            },
+            {
+                "feature": "왼팔 각도",
+                "status": "심각",
+                "risk_percent": 26.73,
+                "coaching": "왼팔 각도를 안정적으로 유지하세요."
+            },
+            {
+                "feature": "왼손목-왼어깨 거리",
+                "status": "심각",
+                "risk_percent": 20.84,
+                "coaching": "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요."
+            }
         ],
-        "current_state": [
-            "LEFT_ARM",
-            2
+        "coaching": [
+            "양쪽 어깨 높이를 일정하게 유지하세요."
         ],
-        "action": "SA-13_ELBOW_RAISE",
-        "reward": -0.1,
-        "reason": "posture did not meaningfully change",
-        "score_delta": 0.18,
-        "updated_q": 0.218
+        "transition": {
+            "previous_state": "LEFT_ARM_POSTURE",
+            "current_state": "LEFT_ARM_POSTURE",
+            "action": "ARM_POSTURE_CORRECT",
+            "updated_q": -0.0019399999999999977
+        }
     }
 }
 {
-    "timestamp": 20.029344444444444,
-    "case": "위험",
-    "final_score": 99.95,
-    "biomechanical_risk": 40.9942,
-    "top_issues": [
-        {
-            "feature": "양쪽 어깨의 높이 차이",
-            "status": "심각",
-            "risk_percent": 29.67,
-            "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
-        },
-        {
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 3,
+        "state": "LEFT_ARM_POSTURE",
+        "action_id": "SA-00",
+        "action": "CALL_SUPERVISOR",
+        "feedback": "상위 Supervisor에게 자세 판단을 위임합니다.",
+        "reward": 0.0013000000000000967,
+        "q": 0.00013000000000000967,
+        "meta": {
             "feature": "왼팔 각도",
-            "status": "심각",
-            "risk_percent": 27.67,
+            "risk_percent": 31.14,
             "coaching": "왼팔 각도를 안정적으로 유지하세요."
-        },
-        {
-            "feature": "왼손목-왼어깨 거리",
-            "status": "심각",
-            "risk_percent": 20.75,
-            "coaching": "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요."
         }
-    ],
-    "coaching": [
-        "양쪽 어깨 높이를 일정하게 유지하세요."
-    ],
-    "transition": {
-        "previous_state": [
-            "LEFT_ARM",
-            2
+    },
+    "pose_agent_meta": {
+        "timestamp": 15.02,
+        "case": "위험",
+        "final_score": 99.82,
+        "biomechanical_risk": 36.8016,
+        "reward": {
+            "reward": 0.0013000000000000967,
+            "reason": "posture improved by 0.13 score points",
+            "score_delta": 0.13
+        },
+        "top_issues": [
+            {
+                "feature": "왼팔 각도",
+                "status": "심각",
+                "risk_percent": 31.14,
+                "coaching": "왼팔 각도를 안정적으로 유지하세요."
+            },
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 25.14,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            },
+            {
+                "feature": "왼손목-왼어깨 거리",
+                "status": "심각",
+                "risk_percent": 18.73,
+                "coaching": "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요."
+            }
         ],
-        "current_state": [
-            "LEFT_ARM",
-            3
+        "coaching": [
+            "왼팔 각도를 안정적으로 유지하세요."
         ],
-        "action": "SA-13_ELBOW_RAISE",
-        "reward": -0.4,
-        "reason": "posture did not meaningfully change; same issue repeated too many times",
-        "score_delta": -0.19,
-        "updated_q": 0.376
+        "transition": {
+            "previous_state": "LEFT_ARM_POSTURE",
+            "current_state": "LEFT_ARM_POSTURE",
+            "action": "CALL_SUPERVISOR",
+            "updated_q": 0.00013000000000000967
+        }
     }
 }
 {
-    "timestamp": 25.0014,
-    "case": "위험",
-    "final_score": 99.96,
-    "biomechanical_risk": 41.9182,
-    "top_issues": [
-        {
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 4,
+        "state": "LEFT_ARM_POSTURE",
+        "action_id": "SA-00",
+        "action": "CALL_SUPERVISOR",
+        "feedback": "상위 Supervisor에게 자세 판단을 위임합니다.",
+        "reward": -0.0014000000000000056,
+        "q": -1.1299999999990978e-05,
+        "meta": {
             "feature": "양쪽 어깨의 높이 차이",
-            "status": "심각",
-            "risk_percent": 34.11,
+            "risk_percent": 34.4,
             "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
-        },
-        {
-            "feature": "왼팔 각도",
-            "status": "심각",
-            "risk_percent": 26.61,
-            "coaching": "왼팔 각도를 안정적으로 유지하세요."
-        },
-        {
-            "feature": "왼손목-왼어깨 거리",
-            "status": "심각",
-            "risk_percent": 18.49,
-            "coaching": "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요."
         }
-    ],
-    "coaching": [
-        "양쪽 어깨 높이를 일정하게 유지하세요."
-    ],
-    "transition": {
-        "previous_state": [
-            "LEFT_ARM",
-            3
+    },
+    "pose_agent_meta": {
+        "timestamp": 20.0,
+        "case": "위험",
+        "final_score": 99.96,
+        "biomechanical_risk": 40.4525,
+        "reward": {
+            "reward": -0.0014000000000000056,
+            "reason": "posture worsened by 0.14 score points",
+            "score_delta": -0.14
+        },
+        "top_issues": [
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 34.4,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            },
+            {
+                "feature": "왼팔 각도",
+                "status": "심각",
+                "risk_percent": 27.48,
+                "coaching": "왼팔 각도를 안정적으로 유지하세요."
+            },
+            {
+                "feature": "왼손목-왼어깨 거리",
+                "status": "심각",
+                "risk_percent": 21.06,
+                "coaching": "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요."
+            }
         ],
-        "current_state": [
-            "LEFT_ARM",
-            3
+        "coaching": [
+            "양쪽 어깨 높이를 일정하게 유지하세요."
         ],
-        "action": "SA-18_SWITCH_POSTURE_REPEAT",
-        "reward": -0.4,
-        "reason": "posture did not meaningfully change; same issue repeated too many times",
-        "score_delta": -0.01,
-        "updated_q": 0.656
+        "transition": {
+            "previous_state": "LEFT_ARM_POSTURE",
+            "current_state": "LEFT_ARM_POSTURE",
+            "action": "CALL_SUPERVISOR",
+            "updated_q": -1.1299999999990978e-05
+        }
+    }
+}
+{
+    "supervisor_payload": {
+        "agent": "posture",
+        "measure": 5,
+        "state": "LEFT_ARM_POSTURE",
+        "action_id": "SA-00",
+        "action": "CALL_SUPERVISOR",
+        "feedback": "상위 Supervisor에게 자세 판단을 위임합니다.",
+        "reward": 0.00019999999999996022,
+        "q": 8.813000000004955e-06,
+        "meta": {
+            "feature": "양쪽 어깨의 높이 차이",
+            "risk_percent": 34.09,
+            "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+        }
+    },
+    "pose_agent_meta": {
+        "timestamp": 25.0,
+        "case": "위험",
+        "final_score": 99.94,
+        "biomechanical_risk": 41.1158,
+        "reward": {
+            "reward": 0.00019999999999996022,
+            "reason": "posture improved by 0.02 score points",
+            "score_delta": 0.02
+        },
+        "top_issues": [
+            {
+                "feature": "양쪽 어깨의 높이 차이",
+                "status": "심각",
+                "risk_percent": 34.09,
+                "coaching": "양쪽 어깨 높이를 일정하게 유지하세요."
+            },
+            {
+                "feature": "왼팔 각도",
+                "status": "심각",
+                "risk_percent": 28.93,
+                "coaching": "왼팔 각도를 안정적으로 유지하세요."
+            },
+            {
+                "feature": "왼손목-왼어깨 거리",
+                "status": "심각",
+                "risk_percent": 17.43,
+                "coaching": "왼어깨에 힘을 빼고 손과 어깨 거리를 유지하세요."
+            }
+        ],
+        "coaching": [
+            "양쪽 어깨 높이를 일정하게 유지하세요."
+        ],
+        "transition": {
+            "previous_state": "LEFT_ARM_POSTURE",
+            "current_state": "LEFT_ARM_POSTURE",
+            "action": "CALL_SUPERVISOR",
+            "updated_q": 8.813000000004955e-06
+        }
     }
 }

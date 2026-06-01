@@ -5,7 +5,7 @@ import cv2
 from agent_model.feature_extractor import FeatureExtractor
 from agent_model.pose_extractor import PoseExtractor
 from agent_model.pose_analyzer import PoseFeedbackAnalyzer
-from agent_model.supervisor_reward import MockPoseRewardTable
+from agent_model.q_pose_reward_updater import Q_PoseRewardUpdater
 from tools.visualizer import print_features
 
 
@@ -22,27 +22,27 @@ class PoseAgent:
     ):
         self.source = source
         self.fps = self._get_capture_fps()
-
-        # 몇 초마다 피드백을 줄지 설정 (현재: 5초마다)
         self.feedback_interval_seconds = feedback_interval_seconds
-        # 다음 피드백 타임스탬프 초기화
         self.next_feedback_timestamp = feedback_interval_seconds
         self.frame_index = 0
 
-        # 컴포넌트 초기화
         self.pose_extractor = pose_extractor or PoseExtractor(self.source)
         self.feature_extractor = feature_extractor or FeatureExtractor(
-            sequence_length=max(1, int(round(self.fps * feedback_interval_seconds))),
+            sequence_length=max(
+                1,
+                int(round(self.fps * feedback_interval_seconds)),
+            ),
             stride=1,
         )
         self.analyzer = analyzer or PoseFeedbackAnalyzer()
         self.output_path = output_path
-        self.supervisor = supervisor or MockPoseRewardTable()
+        self.supervisor = supervisor or Q_PoseRewardUpdater()
 
         self.prev_result = None
         self.prev_state = None
+        self.prev_action = None
+        self.measure_index = 0
 
-    # 메인 루프: 웹캠 프레임 읽기 > 자세 분석(step) > 피드백 출력
     def run(self, display=True):
         try:
             while self.source.isOpened():
@@ -61,7 +61,6 @@ class PoseAgent:
         finally:
             self.release()
 
-    # 한 프레임의 landmakrs 입력 > 자세 분석 + 피드백
     def step(self, landmarks, print_debug=True):
         if landmarks is None:
             return None
@@ -70,84 +69,77 @@ class PoseAgent:
         sequence = self.feature_extractor.update_buffer(features)
 
         if sequence is None:
-            return {
-                "features": features,
-                "analysis": None,
-                "feedback": None,
-                "state": None,
-                "reward": None,
-            }
+            return self._empty_step_result(features)
 
         timestamp = self.current_video_timestamp()
         if timestamp < self.next_feedback_timestamp:
-            return {
-                "features": features,
-                "analysis": None,
-                "feedback": None,
-                "state": None,
-                "reward": None,
-            }
+            return self._empty_step_result(features)
 
-        # 자세 분석
         result = self.analyzer.analyze(sequence)
-
-        # 이전 상태가 존재하면 상태 전이 평가
-        if self.prev_state is not None:
-            transition = self.supervisor.evaluate_transition(
-                previous_result=self.prev_result,
-                current_result=result,
-                previous_state=self.prev_state, 
-            )
-        else:
-            transition = None
-
-        # 사용자에게 보여줄 요약 피드백
         feedback = result["summary"]
-
-        # supervisor state 변환
         current_state = self.supervisor.get_state(result, self.prev_state)
+        self.measure_index += 1
 
-        # reward + action 계산
-        if self.prev_result is not None:
+        reward_info = None
+        transition = None
+
+        if self.prev_result is not None and self.prev_action is not None:
             reward_info = self.supervisor.compute_reward(
                 self.prev_result,
                 result,
                 self.prev_state,
                 current_state,
             )
-
-            action = self.supervisor.choose_action(self.prev_state)
-
-            self.supervisor.update(
+            updated_q = self.supervisor.update(
                 self.prev_state,
-                action,
+                self.prev_action,
                 reward_info["reward"],
                 current_state,
             )
-        else:
-            reward_info = None
-            action = None
+            transition = {
+                "previous_state": self.prev_state.as_tuple(),
+                "current_state": current_state.as_tuple(),
+                "action": self.prev_action,
+                "updated_q": updated_q,
+            }
 
-        # 다음 피드백 타임스탬프 업데이트
+        action = self.supervisor.choose_action(current_state, feedback=feedback)
+        action_result = self.supervisor.execute_action(action, feedback)
+        q_value = self.supervisor.q_value(current_state, action)
+        agent_result = self._build_agent_result(
+            result=result,
+            feedback=feedback,
+            state=current_state,
+            action=action,
+            action_result=action_result,
+            reward_info=reward_info,
+            q_value=q_value,
+            transition=transition,
+            timestamp=timestamp,
+        )
+
         self.prev_result = result
         self.prev_state = current_state
+        self.prev_action = action
+
         while self.next_feedback_timestamp <= timestamp:
             self.next_feedback_timestamp += self.feedback_interval_seconds
 
-        # console 출력 + 결과 저장
-        self.print_feedback(result, reward_info=reward_info, transition=transition)
-        self.write_result(result, feedback, transition, timestamp)
+        self.write_result(agent_result)
 
+        return agent_result
+
+    def _empty_step_result(self, features):
         return {
             "features": features,
-            "analysis": result,
-            "feedback": feedback,
-            "state": current_state.as_tuple() if current_state else None,
-            "action": action,
-            "transition": transition,
+            "analysis": None,
+            "feedback": None,
+            "state": None,
+            "action": None,
+            "reward": None,
+            "transition": None,
         }
 
-    # 웹캠 FPS 가져오기 (기본값: 30 FPS)
     def _get_capture_fps(self):
         fps = self.source.get(cv2.CAP_PROP_FPS)
         if fps and fps > 0:
@@ -157,8 +149,8 @@ class PoseAgent:
     def current_video_timestamp(self):
         timestamp = self.source.get(cv2.CAP_PROP_POS_MSEC) / 1000.0
         if timestamp > 0:
-            return timestamp
-        return self.frame_index / self.fps
+            return round(timestamp, 2)
+        return round(self.frame_index / self.fps, 2)
 
     def pose_to_features(self, landmarks, print_debug=True):
         features = self.feature_extractor.compute(landmarks)
@@ -166,12 +158,11 @@ class PoseAgent:
             print_features(features)
         return features
 
-    # 현재 결과 활용 > 상태 및 Reward 계산
     def update_supervisor(self, result):
         if not self.supervisor:
             return None, None
 
-        state = self.supervisor.get_state(result, previous_state=self.prev_state)
+        state = self.supervisor.get_state(result, prev_state=self.prev_state)
         if self.prev_result is None:
             return state, None
 
@@ -183,53 +174,65 @@ class PoseAgent:
         )
         return state, reward_info
 
-    # 결과 출력
-    def print_feedback(self, result, reward_info=None, transition=None):
-        print("\n" + "=" * 60)
-        print(f"[POSTURE CASE] {result['case']}")
-        print(f"[FINAL SCORE ] {result['final_score']}")
-        print(f"[RISK         ] {result['biomechanical_risk']}")
+    def _build_agent_result(
+        self,
+        result,
+        feedback,
+        state,
+        action,
+        action_result,
+        reward_info,
+        q_value,
+        transition,
+        timestamp,
+    ):
+        supervisor_payload = {
+            "agent": "posture",
+            "measure": self.measure_index,
+            "state": state.as_tuple(),
+            "action_id": action_result["action_id"],
+            "action": action,
+            "feedback": action_result["feedback"],
+            "reward": reward_info["reward"] if reward_info else None,
+            "q": q_value,
+            "meta": self._build_supervisor_meta(result, feedback),
+        }
 
-        print("\n[TOP ISSUES]")
-        for item in result["summary"]["top_issues"]:
-            print(f"- {item['feature']} | {item['status']} | {item['risk_percent']}%")
+        return {
+            "supervisor_payload": supervisor_payload,
+            "pose_agent_meta": {
+                "timestamp": timestamp,
+                "case": result["case"],
+                "final_score": result["final_score"],
+                "biomechanical_risk": result["biomechanical_risk"],
+                "reward": reward_info,
+                "top_issues": feedback.get("top_issues", []),
+                "coaching": feedback.get("coaching", []),
+                "transition": transition,
+            },
+        }
 
-        print("\n[COACHING]")
-        for coaching in result["summary"]["coaching"]:
-            print(f"- {coaching}")
+    def _build_supervisor_meta(self, result, feedback):
+        if self.supervisor.is_stable_result(result):
+            return {}
 
-        if reward_info:
-            print("\n[SUPERVISOR REWARD]")
-            print(f"- reward: {reward_info['reward']}")
-            print(f"- reason: {reward_info['reason']}")
+        top_issues = feedback.get("top_issues", [])
+        if not top_issues:
+            return {}
 
-        if transition:
-            print("\n[RL TRANSITION]")
-            print(f"- previous_state: {transition['previous_state']}")
-            print(f"- current_state: {transition['current_state']}")
-            print(f"- action: {transition['action']}")
-            print(f"- reward: {transition['reward']}")
-            print(f"- reason: {transition['reason']}")
-            print(f"- score_delta: {transition['score_delta']}")
-            print(f"- updated_q: {transition['updated_q']}")
+        top_issue = max(
+            top_issues,
+            key=lambda item: item.get("risk_percent", 0.0),
+        )
+        return {
+            "feature": top_issue.get("feature"),
+            "risk_percent": top_issue.get("risk_percent"),
+            "coaching": top_issue.get("coaching"),
+        }
 
-    # 결과를 JSON 파일로 저장
-    def write_result(self, result, feedback, transition=None, timestamp=None):
+    def write_result(self, output):
         if not self.output_path:
             return
-
-        if timestamp is None:
-            timestamp = self.current_video_timestamp()
-
-        output = {
-            "timestamp": timestamp,
-            "case": result["case"],
-            "final_score": result["final_score"],
-            "biomechanical_risk": result["biomechanical_risk"],
-            "top_issues": feedback["top_issues"],
-            "coaching": feedback["coaching"],
-            "transition": transition,
-        }
 
         with open(self.output_path, "a", encoding="utf-8") as f:
             f.write(json.dumps(output, ensure_ascii=False, indent=4) + "\n")
