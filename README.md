@@ -87,8 +87,8 @@ MediaPipe의 `PoseLandmarker`를 사용해서 프레임마다 사람의 skeleton
 | 0     | `wrist_to_shoulder_left` | 왼손목과 왼쪽 어깨 사이 거리 |
 | 1     | `shoulder_height_diff`   | 양쪽 어깨 높이 차이          |
 | 2     | `wrist_velocity_left`    | 왼손목의 프레임 간 이동량    |
-| 3     | left elbow angle         | 왼쪽 팔꿈치 각도             |
-| 4     | right elbow angle        | 오른쪽 팔꿈치 각도           |
+| 3     | `left_elbow_angle`       | 왼쪽 팔꿈치 각도             |
+| 4     | `right_elbow_angle`      | 오른쪽 팔꿈치 각도           |
 | 5     | `wrist_angle_right`      | 오른쪽 손목 각도             |
 
 각 frame의 feature는 `(6,)` 벡터가 되고, 일정 길이만큼 모이면 `(sequence_length, 6)` 형태의 sequence가 됩니다.
