@@ -1,2 +1,4 @@
-# 특정 확장자 파일을 통계에서 제외 (예: .ipynb)
+# 특정 확장자 파일을 통계에서 제외 (.ipynb)
 *.ipynb linguist-detectable=false
+# Git LFS로 관리할 파일 유형 지정 (.task)
+*.task filter=lfs diff=lfs merge=lfs -text
