@@ -41,12 +41,12 @@ class FeatureExtractor:
             return self._distance(landmarks[15], landmarks[11])
         return None
 
-    def get_elbow_width(self, landmarks):
-        # 양쪽 팔꿈치 사이 거리 계산
-        # 왼팔꿈치(13)-오른팔꿈치(14)
+    def get_shoulder_height_diff(self, landmarks):
+        # 양쪽 어깨의 높이 차이 계산
+        # 왼어깨(11)-오른어깨(12)
         # 반환: float 또는 None
-        if 13 in landmarks and 14 in landmarks:
-            return self._distance(landmarks[13], landmarks[14])
+        if 11 in landmarks and 12 in landmarks:
+            return abs(landmarks[11].y - landmarks[12].y)
         return None
 
     def get_wrist_velocity_left(self, landmarks):
@@ -96,7 +96,7 @@ class FeatureExtractor:
 
         return {
             'wrist_to_shoulder_left': self.get_wrist_to_shoulder_left(landmarks),
-            'elbow_width':            self.get_elbow_width(landmarks),
+            'shoulder_height_diff':   self.get_shoulder_height_diff(landmarks),
             'wrist_velocity_left':    self.get_wrist_velocity_left(landmarks),
             'elbow_angle':            self.get_elbow_angle(landmarks),
             'wrist_angle_right':      self.get_wrist_angle_right(landmarks),
@@ -114,7 +114,7 @@ class FeatureExtractor:
 
         vector = [
             features['wrist_to_shoulder_left'] or 0.0,  # 0 왼손목 - 왼어깨 거리
-            features['elbow_width']            or 0.0,  # 1 양쪽 팔꿈치 거리
+            features['shoulder_height_diff']   or 0.0,  # 1 양쪽 어깨 높이 차이
             features['wrist_velocity_left']    or 0.0,  # 2 왼손목 속도
             ea.get('left',  0.0),                       # 3 왼팔 각도
             ea.get('right', 0.0),                       # 4 오른팔 각도
