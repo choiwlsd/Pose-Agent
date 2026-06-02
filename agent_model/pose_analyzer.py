@@ -251,7 +251,7 @@ class PoseFeedbackAnalyzer:
         if final_score < 45:
             return "안정"
         
-        if severe_count <= 2 and final_score < 70:
+        if severe_count <= 2 and total_bad_contribution < 0.7:
             return "주의"
 
         if final_score < 70:
