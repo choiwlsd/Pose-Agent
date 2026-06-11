@@ -75,6 +75,44 @@ source = cv2.VideoCapture(filename=str(project_root / "asset" / "input_bad.mp4")
 source = cv2.VideoCapture(0)
 ```
 
+## Pose 분석 및 피드백 파이프라인
+
+```text
+Webcam / Video Input
+        ↓
+PoseExtractor
+- MediaPipe Pose Landmarker 기반
+- human pose landmarks 추출
+
+        ↓
+FeatureExtractor
+- landmark 기반 feature 생성
+- 거리 / 각도 / 속도 등 6가지 feature 계산
+
+        ↓
+Sequence Buffer
+- 일정 시간(window) 동안 feature sequence 누적
+- temporal context 구성
+
+        ↓
+PoseFeedbackAnalyzer
+- Logistic Regression 기반 판단
+- Z-score 이상치 탐지
+- rule-based risk scoring 결합
+
+        ↓
+Q_PoseRewardUpdater
+- state / action 정의 및 선택
+- reward 계산
+- Q-table 업데이트 (reinforcement learning)
+
+        ↓
+Output: pose_output.json
+- supervisor payload 생성
+- pose agent 메타데이터 저장
+- 분석 결과 및 상태 기록
+```
+
 ## 저장소 구조
 
 ```text
