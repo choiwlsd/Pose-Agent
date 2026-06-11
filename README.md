@@ -1,4 +1,4 @@
-# 🎻 협주가능 악기 레슨 Agent AI 플랫폼 기술 개발: Pose Agent
+# 🎻 Pose Agent
 
 바이올린 연주자의 자세를 실시간으로 분석하고, 자세 상태와 피드백을 구조화해서 Supervisor Agent에 전달하는 **Pose Agent 프로젝트**입니다.
 
