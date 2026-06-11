@@ -1,6 +1,11 @@
-# Pose Agent
+# 🎻 협주가능 악기 레슨 Agent AI 플랫폼 기술 개발: Pose Agent
 
-영상 또는 웹캠 입력에서 사람의 포즈 랜드마크를 추출하고, 자세 분석 결과를 `pose_output.json`으로 저장하는 자세 에이전트입니다.
+바이올린 연주자의 자세를 실시간으로 분석하고, 자세 상태와 피드백을 구조화해서 Supervisor Agent에 전달하는 **Pose Agent 프로젝트**입니다.
+
+이 프로젝트는 더 큰 음악 학습 Multi-Agent System 안에서 **Posture/Pose 분석 담당 Agent** 역할을 합니다.  
+MediaPipe로 신체 keypoint를 추출하고, biomechanical feature를 계산한 뒤, ML + rule-based logic + Q-table 기반 reward 흐름을 통해 설명 가능한 자세 피드백을 생성합니다.
+
+> 영상 또는 웹캠 입력에서 사람의 포즈 랜드마크를 추출하고, 자세 분석 결과를 `pose_output.json`으로 저장하는 자세 에이전트입니다.
 
 ## 클론 후 실행 준비
 
