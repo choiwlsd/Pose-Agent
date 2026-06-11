@@ -5,13 +5,6 @@
 이 프로젝트는 더 큰 음악 학습 Multi-Agent System 안에서 **Posture/Pose 분석 담당 Agent** 역할을 합니다.  
 MediaPipe로 신체 keypoint를 추출하고, biomechanical feature를 계산한 뒤, ML + rule-based logic + Q-table 기반 reward 흐름을 통해 설명 가능한 자세 피드백을 생성합니다.
 
-> If you plan to clone this project, please clone the `clean-version` branch.  
-> 프로젝트를 clone할 예정이라면 반드시 `clean-version` 브랜치를 기준으로 받아주세요! 🌿
-
-```bash
-git clone -b clean-version <repository-url>
-```
-
 ---
 
 ## 프로젝트 목표 🎯
