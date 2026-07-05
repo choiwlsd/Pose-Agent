@@ -7,6 +7,8 @@ MediaPipe로 신체 keypoint를 추출하고, biomechanical feature를 계산한
 
 > 영상 또는 웹캠 입력에서 사람의 포즈 랜드마크를 추출하고, 자세 분석 결과를 `pose_output.json`으로 저장하는 자세 에이전트입니다.
 
+실제 프로젝트에서 사용된 일부 수정된 형태의 Pose Agent는 [capstone-khu/pose-agent](https://github.com/capstone-khu/pose-agent)에서 확인할 수 있습니다.
+
 ## 클론 후 실행 준비
 
 ### 1. 저장소 클론
